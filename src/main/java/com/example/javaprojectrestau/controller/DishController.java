@@ -5,12 +5,17 @@ import com.example.javaprojectrestau.service.DishService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -216,59 +221,32 @@ public class DishController implements Initializable {
         }
     }
     
-    // Méthode manquante pour ajouter un plat
+    // Modifier la méthode pour ouvrir une nouvelle fenêtre d'ajout de plat
     @FXML
     public void handleAddDish() {
         try {
-            String name = nameField.getText().trim();
-            String priceText = priceField.getText().trim();
-            String description = descriptionArea != null ? descriptionArea.getText().trim() : "";
+            // Charger la vue pour ajouter un plat
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/javaprojectrestau/add-dish-view.fxml"));
+            Parent root = loader.load();
             
-            if (name.isEmpty() || priceText.isEmpty()) {
-                showAlert("Validation Error", "Le nom et le prix sont obligatoires.");
-                return;
-            }
+            // Obtenir le contrôleur
+            AddDishController controller = loader.getController();
             
-            BigDecimal price = new BigDecimal(priceText);
+            // Définir le callback à exécuter après l'ajout d'un plat
+            controller.setOnDishAddedCallback(this::refreshDishList);
             
-            // Vérifier si categoryComboBox est null et fournir une valeur par défaut
-            String category = "Non catégorisé";
-            if (categoryComboBox != null && categoryComboBox.getValue() != null) {
-                category = categoryComboBox.getValue();
-            }
+            // Créer une nouvelle scène et fenêtre
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setTitle("Ajouter un nouveau plat");
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL); // Empêcher l'interaction avec la fenêtre principale
             
-            // Créer un nouveau plat
-            Dish newDish = new Dish(null, name, price, description, category);
+            // Afficher la fenêtre
+            stage.showAndWait();
             
-            // Sauvegarder le plat pour obtenir un ID
-            Dish savedDish = dishService.saveDish(newDish);
-            
-            // Sauvegarder l'image si elle a été sélectionnée
-            if (selectedImageFile != null && savedDish.getId() != null) {
-                try (java.io.FileInputStream fis = new java.io.FileInputStream(selectedImageFile)) {
-                    boolean imageSaved = com.example.javaprojectrestau.db.DatabaseConnection.saveImage(
-                            savedDish.getId(), fis);
-                    if (imageSaved) {
-                        System.out.println("Image sauvegardée avec succès pour le plat ID: " + savedDish.getId());
-                    } else {
-                        System.err.println("Impossible de sauvegarder l'image pour le plat ID: " + savedDish.getId());
-                    }
-                } catch (java.io.IOException e) {
-                    System.err.println("Erreur lors de la lecture du fichier image: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-            
-            // Rafraîchir la liste et effacer les champs
-            refreshDishList();
-            clearFields();
-            
-            showAlert(Alert.AlertType.INFORMATION, "Plat ajouté", 
-                      "Le plat '" + name + "' a été ajouté avec succès.");
-        } catch (NumberFormatException e) {
-            showAlert("Erreur de format", "Le prix doit être un nombre valide.");
         } catch (Exception e) {
-            showAlert("Erreur", "Une erreur est survenue: " + e.getMessage());
+            showAlert("Erreur", "Une erreur est survenue lors de l'ouverture de la fenêtre d'ajout: " + e.getMessage());
             e.printStackTrace();
         }
     }

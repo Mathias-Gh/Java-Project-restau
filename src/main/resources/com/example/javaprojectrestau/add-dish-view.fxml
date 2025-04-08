@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.javaprojectrestau.controller.AddDishController"
+      spacing="10.0" alignment="CENTER" prefWidth="600.0" prefHeight="450.0">
+      
+    <padding>
+        <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+    </padding>
+    
+    <Label text="Ajouter un nouveau plat" style="-fx-font-size: 18; -fx-font-weight: bold"/>
+    
+    <GridPane hgap="10" vgap="10" alignment="CENTER">
+        <Label text="Nom:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="nameField" promptText="Nom du plat" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        
+        <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <TextArea fx:id="descriptionArea" promptText="Description du plat" GridPane.columnIndex="1" 
+                 GridPane.rowIndex="1" prefHeight="100.0" wrapText="true"/>
+        
+        <Label text="Prix (€):" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <TextField fx:id="priceField" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        
+        <Label text="Catégorie:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <ComboBox fx:id="categoryComboBox" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Entrée" />
+                    <String fx:value="Plat principal" />
+                    <String fx:value="Dessert" />
+                    <String fx:value="Boisson" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+        
+        <Label text="Image:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <ImageView fx:id="dishImageView" fitHeight="100.0" fitWidth="100.0" preserveRatio="true"/>
+            <Button text="Parcourir..." onAction="#handleSelectImage"/>
+        </HBox>
+        
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" prefWidth="300.0" />
+        </columnConstraints>
+    </GridPane>
+    
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#handleCancel" />
+        <Button text="Ajouter le plat" onAction="#handleAddDish" styleClass="button-primary"/>
+    </HBox>
+</VBox>
