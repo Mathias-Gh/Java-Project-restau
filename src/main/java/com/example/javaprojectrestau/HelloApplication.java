@@ -2,10 +2,16 @@ package com.example.javaprojectrestau;
 
 import com.example.javaprojectrestau.db.DatabaseConnection;
 import com.example.javaprojectrestau.service.DishService;
+import com.example.javaprojectrestau.service.OrderService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -20,12 +26,30 @@ public class HelloApplication extends Application {
             showDatabaseAlert();
         }
         
-        // Initialiser le service et créer les tables si nécessaire
+        // Initialiser les services et créer les tables si nécessaire
         DishService dishService = new DishService();
+        OrderService orderService = new OrderService();
         
-        // Charger l'interface utilisateur
+        // Créer un menu pour naviguer entre les vues
+        MenuBar menuBar = new MenuBar();
+        Menu navigationMenu = new Menu("Navigation");
+        
+        MenuItem dishesItem = new MenuItem("Gestion des plats");
+        dishesItem.setOnAction(e -> loadView(stage, "dish-view.fxml", "Gestion des plats"));
+        
+        MenuItem ordersItem = new MenuItem("Gestion des commandes");
+        ordersItem.setOnAction(e -> loadView(stage, "order-view.fxml", "Gestion des commandes"));
+        
+        navigationMenu.getItems().addAll(dishesItem, ordersItem);
+        menuBar.getMenus().add(navigationMenu);
+        
+        // Charger la vue des plats par défaut
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("dish-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+        VBox rootContent = new VBox();
+        rootContent.getChildren().add(menuBar);
+        rootContent.getChildren().add(fxmlLoader.load());
+        
+        Scene scene = new Scene(rootContent, 900, 600);
         stage.setTitle("Système de Gestion de Restaurant");
         stage.setScene(scene);
         stage.show();
@@ -46,6 +70,32 @@ public class HelloApplication extends Application {
                 "1. MySQL est installé et en cours d'exécution\n" +
                 "2. Les identifiants dans DatabaseConnection.java sont corrects");
         
+        alert.showAndWait();
+    }
+
+    private void loadView(Stage stage, String fxmlFile, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            Node content = loader.load();
+            
+            VBox root = (VBox) stage.getScene().getRoot();
+            
+            // Conserver le menuBar et remplacer le contenu
+            root.getChildren().remove(1, root.getChildren().size());
+            root.getChildren().add(content);
+            
+            stage.setTitle(title);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la vue: " + e.getMessage());
+        }
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
         alert.showAndWait();
     }
 
