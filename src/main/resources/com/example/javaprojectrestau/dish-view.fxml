@@ -25,6 +25,9 @@
                 <padding>
                     <Insets right="10.0" bottom="10.0"/>
                 </padding>
+                <Button text="Supprimer le plat sélectionné" onAction="#handleDeleteDish" 
+                        fx:id="deleteButton" disable="true"
+                        style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
                 <Button text="Ajouter un nouveau plat" onAction="#handleAddDish"/>
             </HBox>
         </VBox>
