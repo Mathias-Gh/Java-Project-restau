@@ -1,6 +1,7 @@
 package com.example.javaprojectrestau.model;
 
 import java.math.BigDecimal;
+import javafx.scene.image.Image;
 
 public class Dish {
     private Long id;
@@ -8,6 +9,7 @@ public class Dish {
     private BigDecimal price;
     private String description;
     private String category;
+    private Image image; // Pour l'affichage dans JavaFX
     
     public Dish() {}
     
@@ -34,6 +36,9 @@ public class Dish {
     
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
+    
+    public Image getImage() { return image; }
+    public void setImage(Image image) { this.image = image; }
     
     @Override
     public String toString() {

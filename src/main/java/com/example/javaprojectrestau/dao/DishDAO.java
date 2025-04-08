@@ -18,7 +18,8 @@ public class DishDAO {
                 "name VARCHAR(100) NOT NULL," +
                 "price DECIMAL(10,2) NOT NULL," +
                 "description TEXT," +
-                "category VARCHAR(50)" +
+                "category VARCHAR(50)," +
+                "image LONGBLOB" +
                 ")";
         
         Connection conn = DatabaseConnection.getConnection();

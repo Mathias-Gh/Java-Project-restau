@@ -15,6 +15,7 @@ import javafx.stage.FileChooser;
 import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class DishController implements Initializable {
@@ -129,6 +130,28 @@ public class DishController implements Initializable {
         if (dishDetailsDescription != null) {
             dishDetailsDescription.setText(dish.getDescription());
         }
+        
+        // Charger l'image du plat depuis la base de données
+        if (dishDetailsImageView != null && dish.getId() != null) {
+            try {
+                java.sql.Blob imageBlob = com.example.javaprojectrestau.db.DatabaseConnection.getImage(dish.getId());
+                if (imageBlob != null) {
+                    try (java.io.InputStream is = imageBlob.getBinaryStream()) {
+                        Image image = new Image(is);
+                        dishDetailsImageView.setImage(image);
+                    } catch (java.io.IOException e) {
+                        System.err.println("Erreur lors de la lecture de l'image: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                } else {
+                    // Pas d'image trouvée
+                    dishDetailsImageView.setImage(null);
+                }
+            } catch (SQLException e) {
+                System.err.println("Erreur SQL lors de la récupération de l'image: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
     
     @FXML
@@ -216,7 +239,25 @@ public class DishController implements Initializable {
             
             // Créer un nouveau plat
             Dish newDish = new Dish(null, name, price, description, category);
-            dishService.saveDish(newDish);
+            
+            // Sauvegarder le plat pour obtenir un ID
+            Dish savedDish = dishService.saveDish(newDish);
+            
+            // Sauvegarder l'image si elle a été sélectionnée
+            if (selectedImageFile != null && savedDish.getId() != null) {
+                try (java.io.FileInputStream fis = new java.io.FileInputStream(selectedImageFile)) {
+                    boolean imageSaved = com.example.javaprojectrestau.db.DatabaseConnection.saveImage(
+                            savedDish.getId(), fis);
+                    if (imageSaved) {
+                        System.out.println("Image sauvegardée avec succès pour le plat ID: " + savedDish.getId());
+                    } else {
+                        System.err.println("Impossible de sauvegarder l'image pour le plat ID: " + savedDish.getId());
+                    }
+                } catch (java.io.IOException e) {
+                    System.err.println("Erreur lors de la lecture du fichier image: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
             
             // Rafraîchir la liste et effacer les champs
             refreshDishList();

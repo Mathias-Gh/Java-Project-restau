@@ -3,6 +3,10 @@ package com.example.javaprojectrestau.db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.io.InputStream;
+import java.sql.Blob;
 
 public class DatabaseConnection {
     // Configuration MySQL pour macOS - pas de mot de passe par défaut
@@ -22,11 +26,13 @@ public class DatabaseConnection {
                 try {
                     connection = DriverManager.getConnection(URL, USER, PASSWORD);
                     System.out.println("Connexion à la base de données établie avec succès.");
+                    initializeDatabase(); // Initialiser la structure de la base de données
                 } catch (SQLException e) {
                     System.out.println("Tentative de connexion avec mot de passe alternatif...");
                     // Si ça échoue, essayer avec 'root' comme mot de passe
                     connection = DriverManager.getConnection(URL, USER, "root");
                     System.out.println("Connexion à la base de données établie avec mot de passe alternatif.");
+                    initializeDatabase(); // Initialiser la structure de la base de données
                 }
             } catch (SQLException e) {
                 System.err.println("Erreur lors de la connexion à la base de données: " + e.getMessage());
@@ -39,6 +45,35 @@ public class DatabaseConnection {
             }
         }
         return connection;
+    }
+    
+    // Initialiser la structure de la base de données
+    private static void initializeDatabase() {
+        try {
+            // Vérifier si la table existe, sinon la créer
+            try (var stmt = connection.createStatement()) {
+                // Créer la table dishes si elle n'existe pas
+                stmt.execute("CREATE TABLE IF NOT EXISTS dishes (" +
+                        "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
+                        "name VARCHAR(100) NOT NULL," +
+                        "price DECIMAL(10,2) NOT NULL," +
+                        "description TEXT," +
+                        "category VARCHAR(50)," +
+                        "image LONGBLOB" +
+                        ")");
+                
+                // Vérifier si la colonne image existe déjà
+                ResultSet rs = connection.getMetaData().getColumns(null, null, "dishes", "image");
+                if (!rs.next()) {
+                    // La colonne n'existe pas, l'ajouter
+                    stmt.execute("ALTER TABLE dishes ADD COLUMN image LONGBLOB");
+                    System.out.println("Colonne 'image' ajoutée à la table 'dishes'.");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de l'initialisation de la base de données: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     
     // Créer une connexion simulée pour permettre à l'application de fonctionner en mode démo
@@ -57,9 +92,10 @@ public class DatabaseConnection {
                         "name VARCHAR(100) NOT NULL," +
                         "price DECIMAL(10,2) NOT NULL," +
                         "description TEXT," +
-                        "category VARCHAR(50)" +
+                        "category VARCHAR(50)," +
+                        "image BLOB" +
                         ")");
-                System.out.println("Table 'dishes' créée dans la base de données en mémoire.");
+                System.out.println("Table 'dishes' créée dans la base de données en mémoire avec support d'images.");
             }
         } catch (Exception e) {
             System.err.println("Impossible de créer une base de données de secours: " + e.getMessage());
@@ -77,6 +113,40 @@ public class DatabaseConnection {
                 System.err.println("Erreur lors de la fermeture de la connexion: " + e.getMessage());
                 e.printStackTrace();
             }
+        }
+    }
+    
+    // Méthodes utilitaires pour gérer les images
+    
+    // Sauvegarder une image pour un plat
+    public static boolean saveImage(long dishId, InputStream imageData) {
+        String sql = "UPDATE dishes SET image = ? WHERE id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setBinaryStream(1, imageData);
+            pstmt.setLong(2, dishId);
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la sauvegarde de l'image: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    // Récupérer une image pour un plat
+    public static Blob getImage(long dishId) {
+        String sql = "SELECT image FROM dishes WHERE id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setLong(1, dishId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getBlob("image");
+            }
+            return null;
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération de l'image: " + e.getMessage());
+            e.printStackTrace();
+            return null;
         }
     }
 }
