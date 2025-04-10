@@ -1,5 +1,8 @@
 package com.example.javaprojectrestau.controller;
 
+import com.example.javaprojectrestau.HelloApplication;
+import com.example.javaprojectrestau.service.TimerService;
+import javafx.scene.control.Alert;
 import com.example.javaprojectrestau.model.Order;
 import com.example.javaprojectrestau.model.OrderItem;
 import com.example.javaprojectrestau.service.OrderService;
@@ -22,6 +25,8 @@ import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
+import javafx.scene.layout.VBox;
+
 public class OrderController implements Initializable {
 
     @FXML private ListView<Order> pendingOrdersListView;
@@ -41,6 +46,9 @@ public class OrderController implements Initializable {
     
     @FXML private Button completeButton;
     @FXML private Button cancelButton;
+    @FXML private Button addOrderBtn; // Nom réel du bouton d'ajout de commande
+    
+    @FXML private VBox mainVBox; // Conteneur principal de la vue
     
     private final OrderService orderService = new OrderService();
     private Order selectedOrder;
@@ -49,8 +57,22 @@ public class OrderController implements Initializable {
     private ObservableList<Order> completedOrders = FXCollections.observableArrayList();
     private ObservableList<OrderItem> orderItems = FXCollections.observableArrayList();
     
+    private TimerService timerService;
+    
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Obtenir l'instance publique du service de chronomètre
+        timerService = HelloApplication.getInstance().timerService;
+        
+        // Ajouter un listener pour réagir aux changements d'état
+        timerService.canTakeOrdersProperty().addListener((obs, oldVal, newVal) -> {
+            // Passer la valeur booléenne à updateButtonsState
+            updateButtonsState(newVal);
+        });
+        
+        // Initialiser l'état des boutons avec la valeur actuelle
+        updateButtonsState(timerService.getCanTakeOrders());
+        
         // Configuration des listes
         pendingOrdersListView.setItems(pendingOrders);
         completedOrdersListView.setItems(completedOrders);
@@ -90,6 +112,11 @@ public class OrderController implements Initializable {
         
         // Charger les commandes
         refreshOrders();
+        
+        // Désactiver les boutons de commande si on ne peut plus prendre de commandes
+        timerService.canTakeOrdersProperty().addListener((obs, oldVal, newVal) -> {
+            updateButtonsState();
+        });
     }
     
     private void showOrderDetails(Order order) {
@@ -131,6 +158,12 @@ public class OrderController implements Initializable {
     
     @FXML
     public void handleNewOrder() {
+        if (!timerService.getCanTakeOrders()) {
+            showAlert(Alert.AlertType.WARNING, "Commandes fermées", 
+                "Les commandes sont fermées car le service se termine bientôt.");
+            return;
+        }
+        
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/javaprojectrestau/add-order-view.fxml"));
             Parent root = loader.load();
@@ -265,5 +298,48 @@ public class OrderController implements Initializable {
         dialogPane.getStyleClass().add("dialog-pane");
         
         alert.showAndWait();
+    }
+    
+    private void updateButtonsState() {
+        // Appeler la version avec paramètre en passant l'état actuel
+        boolean canTakeOrders = HelloApplication.timerService.getCanTakeOrders();
+        updateButtonsState(canTakeOrders);
+    }
+    
+    private void updateButtonsState(boolean canTakeOrders) {
+        // Adapter cette partie à vos composants d'interface existants
+        // Par exemple, désactiver le bouton d'ajout de commande
+        addOrderBtn.setDisable(!canTakeOrders);
+        
+        if (!canTakeOrders) {
+            Label warningLabel = new Label("COMMANDES FERMÉES");
+            warningLabel.getStyleClass().add("status-forbidden");
+            warningLabel.setStyle("-fx-font-size: 18px; -fx-padding: 10px;");
+            
+            // Afficher le message d'avertissement en haut de la vue
+            if (mainVBox instanceof VBox) {
+                VBox container = (VBox) mainVBox;
+                if (!container.getChildren().stream().anyMatch(node -> node instanceof Label && 
+                        ((Label)node).getText().equals("COMMANDES FERMÉES"))) {
+                    container.getChildren().add(0, warningLabel);
+                }
+            }
+        } else {
+            // Retirer le message d'avertissement si présent
+            if (mainVBox instanceof VBox) {
+                VBox container = (VBox) mainVBox;
+                container.getChildren().removeIf(node -> node instanceof Label && 
+                        ((Label)node).getText().equals("COMMANDES FERMÉES"));
+            }
+        }
+    }
+    
+    private void updateOrderView() {
+        // ...existing code...
+        
+        // Remplacer l'appel sans argument par un appel avec l'état actuel
+        updateButtonsState(HelloApplication.timerService.getCanTakeOrders());
+        
+        // ...existing code...
     }
 }

@@ -639,3 +639,37 @@
     -fx-border-color: transparent transparent derive(-background-tertiary-color, 10%) transparent;
     -fx-border-width: 0 0 1 0;
 }
+
+/* Styles pour le composant chronomètre */
+.timer-component {
+    -fx-background-color: -background-secondary-color;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
+    -fx-padding: 12px;
+    -fx-spacing: 8px;
+}
+
+.timer-title {
+    -fx-text-fill: -text-color;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.timer-display {
+    -fx-text-fill: -primary-color;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 5 0 5 0;
+}
+
+.status-allowed {
+    -fx-text-fill: #2ecc71;
+    -fx-font-weight: bold;
+}
+
+.status-forbidden {
+    -fx-text-fill: #e74c3c;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}

@@ -10,10 +10,10 @@
             fx:controller="com.example.javaprojectrestau.controller.OrderController"
             prefWidth="900.0" prefHeight="600.0">
     <top>
-        <VBox spacing="10">
+        <VBox fx:id="mainVBox" spacing="10">
             <Label text="Gestion des commandes" styleClass="header-label"/>
             <HBox alignment="CENTER_RIGHT" spacing="10">
-                <Button text="Nouvelle commande" onAction="#handleNewOrder" styleClass="button-primary"/>
+                <Button fx:id="addOrderBtn" text="Ajouter une commande" onAction="#handleNewOrder" styleClass="button-primary"/>
             </HBox>
             <Separator/>
         </VBox>
