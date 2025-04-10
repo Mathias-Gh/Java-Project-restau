@@ -68,7 +68,32 @@ public class DatabaseConnection {
                     stmt.execute("ALTER TABLE dishes ADD COLUMN image LONGBLOB");
                     System.out.println("Colonne 'image' ajoutée à la table 'dishes'.");
                 }
+                // ✅ Créer la table table_resto si elle n'existe pas
+                stmt.execute("CREATE TABLE IF NOT EXISTS table_resto (" +
+                        "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
+                        "taille INT NOT NULL UNIQUE," +
+                        "emplacement INT NOT NULL," +
+                        "disponible BOOLEAN DEFAULT TRUE" +
+                        ")");
+
+                // ✅ Créer la table commande si elle n'existe pas
+                stmt.execute("CREATE TABLE IF NOT EXISTS commande (" +
+                        "id INT AUTO_INCREMENT PRIMARY KEY," +
+                        "client_id INT NOT NULL," +
+                        "table_id INT NOT NULL," +
+                        "date_commande TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+                        "FOREIGN KEY (client_id) REFERENCES client(id) ON DELETE CASCADE," +
+                        "FOREIGN KEY (table_id) REFERENCES table_resto(id) ON DELETE CASCADE" +
+                        ")");
+
+                // ✅ Créer la table client si elle n'existe pas
+                stmt.execute("CREATE TABLE IF NOT EXISTS client (" +
+                        "id INT AUTO_INCREMENT PRIMARY KEY," +
+                        "nom VARCHAR(255) NOT NULL" +
+                        ")");
+
             }
+
         } catch (SQLException e) {
             System.err.println("Erreur lors de l'initialisation de la base de données: " + e.getMessage());
             e.printStackTrace();

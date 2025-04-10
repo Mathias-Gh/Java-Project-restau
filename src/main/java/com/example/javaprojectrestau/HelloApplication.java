@@ -39,8 +39,11 @@ public class HelloApplication extends Application {
         
         MenuItem ordersItem = new MenuItem("Gestion des commandes");
         ordersItem.setOnAction(e -> loadView(stage, "order-view.fxml", "Gestion des commandes"));
+
+        MenuItem tablesItem = new MenuItem("Gestion des tables");
+        tablesItem.setOnAction(e -> loadView(stage, "table-view.fxml", "Gestion des tables"));
         
-        navigationMenu.getItems().addAll(dishesItem, ordersItem);
+        navigationMenu.getItems().addAll(dishesItem, ordersItem, tablesItem);
         menuBar.getMenus().add(navigationMenu);
         
         // Charge la vue des plats par défaut

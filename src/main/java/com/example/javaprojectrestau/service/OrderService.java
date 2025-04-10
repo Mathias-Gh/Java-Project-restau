@@ -1,10 +1,14 @@
 package com.example.javaprojectrestau.service;
 
 import com.example.javaprojectrestau.dao.OrderDAO;
+import com.example.javaprojectrestau.db.DatabaseConnection;
 import com.example.javaprojectrestau.model.Dish;
 import com.example.javaprojectrestau.model.Order;
 import com.example.javaprojectrestau.model.OrderItem;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,5 +70,18 @@ public class OrderService {
         }
         
         return null;
+    }
+    public void createCommande(int clientId, int tableId, String commande) {
+        String sql = "INSERT INTO commande (client_id, table_id, date_commande, commande) VALUES (?, ?, NOW(), ?)";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, clientId);
+            stmt.setInt(2, tableId);
+            stmt.setString(3, commande);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

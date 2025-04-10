@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.javaprojectrestau.controller.TableViewController"
+      spacing="10" alignment="CENTER" style="-fx-padding: 20;">
+
+    <Label text="Assignation des tables aux clients" style="-fx-font-size: 16px;" />
+
+    <TableView fx:id="tableView" prefWidth="400">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="100"/>
+            <TableColumn fx:id="tailleColumn" text="Taille" prefWidth="100"/>
+            <TableColumn fx:id="emplacementColumn" text="Emplacement" prefWidth="200"/>
+            <TableColumn fx:id="disponibleColumn" text="Disponible" prefWidth="150"/>
+        </columns>
+    </TableView>
+
+    <!-- Section pour ajouter un client -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Nom du client:"/>
+        <TextField fx:id="clientNameField" promptText="Entrez le nom du client" />
+        <Button text="Créer le client" onAction="#createClient" />
+    </HBox>
+
+    <!-- Section pour assigner une table à un client -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Choisir un client:"/>
+        <ComboBox fx:id="clientComboBox" />
+        <Label text="Taille de la table:"/>
+        <TextField fx:id="tailleField" promptText="Entrez la taille de la table" />
+        <Label text="Emplacement de la table:"/>
+        <TextField fx:id="emplacementField" promptText="Entrez l'emplacement de la table" />
+        <Label text="Disponibilité de la table:"/>
+        <CheckBox fx:id="disponibleCheckBox" text="Disponible" />
+        <Button text="Assigner une table" onAction="#assignTable" />
+    </HBox>
+
+</VBox>
