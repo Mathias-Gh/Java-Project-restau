@@ -11,8 +11,8 @@ import java.sql.Blob;
 public class DatabaseConnection {
     // Configuration MySQL pour macOS pas de mot de passe par défaut
     private static final String URL = "jdbc:mysql://localhost:3306/restaurant_db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false";
-    private static final String USER = "root";  // Utilisateur par défaut sur macOS
-    private static final String PASSWORD = "";  // Mot de passe vide par défaut sur macOS
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
     
     private static Connection connection;
     
@@ -26,7 +26,7 @@ public class DatabaseConnection {
                 try {
                     connection = DriverManager.getConnection(URL, USER, PASSWORD);
                     System.out.println("Connexion à la base de données établie avec succès.");
-                    initializeDatabase(); // Initialiser la structure de la base de données
+                    initializeDatabase(); // Initialisation la structure de la base de données
                 } catch (SQLException e) {
                     System.out.println("Tentative de connexion avec mot de passe alternatif...");
                     // Si ça échoue, essayer avec 'root' comme mot de passe
@@ -47,10 +47,10 @@ public class DatabaseConnection {
         return connection;
     }
     
-    // Initialiser la structure de la base de données
+    // Initialisation la structure de la base de données
     private static void initializeDatabase() {
         try {
-            // Vérifier si la table existe, sinon la créer
+            // on vérifie si la table existe, sinon la créer
             try (var stmt = connection.createStatement()) {
                 // Créer la table dishes si elle n'existe pas
                 stmt.execute("CREATE TABLE IF NOT EXISTS dishes (" +
@@ -61,11 +61,11 @@ public class DatabaseConnection {
                         "category VARCHAR(50)," +
                         "image LONGBLOB" +
                         ")");
-
+              
                 // Vérifier si la colonne image existe déjà
                 ResultSet rs = connection.getMetaData().getColumns(null, null, "dishes", "image");
                 if (!rs.next()) {
-                    // La colonne n'existe pas, l'ajouter
+                    // si la colonne n'existe pas, l'ajouter
                     stmt.execute("ALTER TABLE dishes ADD COLUMN image LONGBLOB");
                     System.out.println("Colonne 'image' ajoutée à la table 'dishes'.");
                 }
@@ -125,8 +125,6 @@ public class DatabaseConnection {
             }
         }
     }
-    
-    // Méthodes utilitaires pour gérer les images
     
     // Sauvegarder une image pour un plat
     public static boolean saveImage(long dishId, InputStream imageData) {

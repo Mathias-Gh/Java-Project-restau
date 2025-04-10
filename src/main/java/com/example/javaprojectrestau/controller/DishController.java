@@ -48,6 +48,7 @@ public class DishController implements Initializable {
     @FXML private Label dishDetailsName;
     @FXML private Label dishDetailsPrice;
     @FXML private TextArea dishDetailsDescription;
+    @FXML private Button deleteButton;
     
     private Dish selectedDish;
     private ObservableList<Dish> dishList = FXCollections.observableArrayList();
@@ -76,6 +77,15 @@ public class DishController implements Initializable {
                 if (newSelection != null) {
                     selectedDish = newSelection;
                     showDishDetails(selectedDish);
+                    // Activer le bouton de suppression
+                    if (deleteButton != null) {
+                        deleteButton.setDisable(false);
+                    }
+                } else {
+                    // Désactiver le bouton de suppression si aucun plat n'est sélectionné
+                    if (deleteButton != null) {
+                        deleteButton.setDisable(true);
+                    }
                 }
             });
         }
@@ -258,23 +268,54 @@ public class DishController implements Initializable {
     }
     
     @FXML
-    private void handleDeleteDish() {
+    public void handleDeleteDish() {
         if (selectedDish != null) {
             Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
             confirmation.setTitle("Confirmer la suppression");
             confirmation.setHeaderText("Êtes-vous sûr de vouloir supprimer ce plat ?");
-            confirmation.setContentText(selectedDish.getName());
+            confirmation.setContentText("Le plat \"" + selectedDish.getName() + "\" sera définitivement supprimé.");
+            
+            // Personnaliser le style de la fenêtre de confirmation
+            DialogPane dialogPane = confirmation.getDialogPane();
+            dialogPane.setStyle("-fx-background-color: #fadbd8;"); // Fond légèrement rouge
+            
+            // Personnaliser les boutons
+            Button okButton = (Button) dialogPane.lookupButton(ButtonType.OK);
+            okButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
+            okButton.setText("Supprimer");
+            
+            Button cancelButton = (Button) dialogPane.lookupButton(ButtonType.CANCEL);
+            cancelButton.setText("Annuler");
+            
+            // Ajouter une icône d'avertissement
+            dialogPane.getStyleClass().add("alert");
             
             confirmation.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
-                    dishService.deleteDish(selectedDish.getId());
-                    clearFields();
-                    selectedDish = null;
-                    refreshDishList();
+                    boolean success = dishService.deleteDish(selectedDish.getId());
+                    
+                    if (success) {
+                        showAlert(Alert.AlertType.INFORMATION, "Suppression réussie", 
+                                "Le plat a été supprimé avec succès.");
+                                
+                        // Réinitialiser les détails et désactiver le bouton
+                        if (dishDetailsName != null) dishDetailsName.setText("");
+                        if (dishDetailsPrice != null) dishDetailsPrice.setText("");
+                        if (dishDetailsDescription != null) dishDetailsDescription.setText("");
+                        if (dishDetailsImageView != null) dishDetailsImageView.setImage(null);
+                        if (deleteButton != null) deleteButton.setDisable(true);
+                        
+                        selectedDish = null;
+                        refreshDishList();
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, "Erreur", 
+                                "Impossible de supprimer le plat. Il est peut-être utilisé dans des commandes.");
+                    }
                 }
             });
         } else {
-            showAlert("Aucune sélection", "Veuillez sélectionner un plat à supprimer.");
+            showAlert(Alert.AlertType.WARNING, "Aucune sélection", 
+                    "Veuillez sélectionner un plat à supprimer.");
         }
     }
     

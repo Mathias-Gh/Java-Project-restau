@@ -21,7 +21,7 @@ import java.sql.Connection;
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        // Initialiser la connexion à la base de données
+        // connexion à la base de données
         Connection connection = DatabaseConnection.getConnection();
         if (connection == null) {
             showDatabaseAlert();
@@ -32,7 +32,7 @@ public class HelloApplication extends Application {
         OrderService orderService = new OrderService();
         EmployeService employeService = new EmployeService();
         
-        // Créer un menu pour naviguer entre les vues
+        // menu pour naviguer entre les vues
         MenuBar menuBar = new MenuBar();
         Menu navigationMenu = new Menu("Navigation");
         
@@ -44,11 +44,15 @@ public class HelloApplication extends Application {
 
         MenuItem employesItem = new MenuItem("Gestion des employés");
         employesItem.setOnAction(e -> loadView(stage, "employe-view.fxml", "Gestion des employés"));
+      
+        // Ajouter le nouvel élément pour afficher le menu avec une belle interface visuelle
+        MenuItem menuGalleryItem = new MenuItem("Affichage du Menu");
+        menuGalleryItem.setOnAction(e -> loadView(stage, "menu-gallery-view.fxml", "Menu du Restaurant"));
+        navigationMenu.getItems().addAll(dishesItem, ordersItem, employesItem, menuGalleryItem);
 
-        navigationMenu.getItems().addAll(dishesItem, ordersItem, employesItem);
         menuBar.getMenus().add(navigationMenu);
         
-        // Charger la vue des plats par défaut
+        // Charge la vue des plats par défaut
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("dish-view.fxml"));
         VBox rootContent = new VBox();
         rootContent.getChildren().add(menuBar);
@@ -62,7 +66,7 @@ public class HelloApplication extends Application {
     
     @Override
     public void stop() {
-        // Fermer proprement la connexion à la base de données
+        // Ferme proprement la connexion à la base de données
         DatabaseConnection.closeConnection();
     }
 
@@ -85,7 +89,7 @@ public class HelloApplication extends Application {
             
             VBox root = (VBox) stage.getScene().getRoot();
             
-            // Conserver le menuBar et remplacer le contenu
+            // Conserve le menuBar et remplace le contenu
             root.getChildren().remove(1, root.getChildren().size());
             root.getChildren().add(content);
             
