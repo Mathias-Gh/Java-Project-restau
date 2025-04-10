@@ -20,7 +20,7 @@ public class AddHourWorkedController {
     @FXML
     public void initialize() {
         // Charger les employés dans la ComboBox
-        ObservableList<Employe> employeList = FXCollections.observableArrayList(employeService.getAllEmploye());
+        ObservableList<Employe> employeList = FXCollections.observableArrayList(employeService.getAllEmployes());
         employeeComboBox.setItems(employeList);
 
         // Configurer le ComboBox pour afficher uniquement les noms

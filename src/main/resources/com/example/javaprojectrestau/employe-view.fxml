@@ -7,64 +7,71 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.javaprojectrestau.controller.EmployeController">
+            fx:controller="com.example.javaprojectrestau.controller.EmployeController"
+            styleClass="content-pane">
 
     <top>
-        <VBox>
-            <Label text="Gestion des employés du restaurant" BorderPane.alignment="CENTER">
+        <VBox spacing="10">
+            <Label text="Gestion des employés" styleClass="header-label">
                 <font>
-                    <Font name="System Bold" size="18.0"/>
+                    <Font size="24.0"/>
                 </font>
-                <padding>
-                    <Insets top="10.0" bottom="10.0"/>
-                </padding>
             </Label>
             <HBox alignment="CENTER_RIGHT" spacing="10">
-                <padding>
-                    <Insets right="10.0" bottom="10.0"/>
-                </padding>
-                <Button text="Ajouter un nouvel employé" onAction="#handleAddEmploye"/>
-                <Button text="Ajouter des heures travaillées" onAction="#handleAddHourWorked"/>            </HBox>
+                <Button text="Ajouter un nouvel employé" onAction="#handleAddEmploye"
+                        styleClass="button-primary"/>
+                <Button text="Ajouter des heures travaillées" onAction="#handleAddHourWorked"/>
+            </HBox>
+            <Separator/>
         </VBox>
     </top>
+    
     <center>
-        <VBox spacing="10.0">
+        <VBox spacing="15.0">
             <padding>
-                <Insets top="10.0" right="10.0" bottom="10.0" left="10.0"/>
+                <Insets top="10.0" right="0.0" bottom="10.0" left="0.0"/>
             </padding>
-            <Label text="Détails de l'employé" style="-fx-font-weight: bold"/>
-            <GridPane hgap="10" vgap="10">
-                <Label text="Nom:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                <Label fx:id="employeDetailsName" style="-fx-font-weight: bold" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                
-                <Label text="heure de travail:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                <Label fx:id="employeDetailsWorking_hour" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-
-                <Label text="heure travaillé:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                <Label fx:id="employeDetailsHour_worked" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                
-                <Label text="poste attribué:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-                <Label fx:id="employeDetailsPost" style="-fx-font-weight: bold" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-
-                <columnConstraints>
-                    <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" prefWidth="300.0" />
-                    <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" prefWidth="300.0" />
-                </columnConstraints>
-
-            </GridPane>
-
+            
             <TableView fx:id="employeTable" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn fx:id="idColumn" text="ID" />
-                    <TableColumn fx:id="nameColumn" text="Nom" />
-                    <TableColumn fx:id="working_hourColumn" text="Heures de travail" />
-                    <TableColumn fx:id="hour_workedColumn" text="Heures de travaillé" />
-                    <TableColumn fx:id="postColumn" text="Poste" />
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+                    <TableColumn fx:id="nameColumn" text="Nom" prefWidth="200"/>
+                    <TableColumn fx:id="working_hourColumn" text="Heures de travail" prefWidth="130"/>
+                    <TableColumn fx:id="hour_workedColumn" text="Heures travaillées" prefWidth="130"/>
+                    <TableColumn fx:id="postColumn" text="Poste" prefWidth="150"/>
                 </columns>
             </TableView>
-            <HBox spacing="10" alignment="CENTER_RIGHT">
-                <Button text="Supprimer" onAction="#handleDeleteEmploye"/>
-            </HBox>
+
+            <VBox spacing="15.0">
+                <padding>
+                    <Insets top="10.0" right="0.0" bottom="0.0" left="0.0"/>
+                </padding>
+                <Label text="Détails de l'employé" styleClass="header-label"/>
+                
+                <GridPane hgap="15" vgap="15" styleClass="detail-grid">
+                    <Label text="Nom:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Label fx:id="employeDetailsName" styleClass="detail-value" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    
+                    <Label text="Heures de travail:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Label fx:id="employeDetailsWorking_hour" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    
+                    <Label text="Heures travaillées:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <Label fx:id="employeDetailsHour_worked" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                    
+                    <Label text="Poste attribué:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <Label fx:id="employeDetailsPost" styleClass="detail-value" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0" prefWidth="150.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" prefWidth="300.0" />
+                    </columnConstraints>
+                </GridPane>
+                
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button text="Supprimer l'employé" onAction="#handleDeleteEmploye" 
+                            styleClass="button-danger"/>
+                </HBox>
+            </VBox>
         </VBox>
     </center>
     

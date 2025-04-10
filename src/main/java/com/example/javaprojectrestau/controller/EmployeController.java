@@ -7,14 +7,17 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class EmployeController implements Initializable {
@@ -70,7 +73,7 @@ public class EmployeController implements Initializable {
 
     private void refreshEmployeList() {
         employeList.clear();
-        employeList.addAll(employeService.getAllEmploye());
+        employeList.addAll(employeService.getAllEmployes());
 
         if (employeTable != null) {
             employeTable.setItems(employeList);
@@ -103,6 +106,22 @@ public class EmployeController implements Initializable {
         }
     }
 
+    // Méthode pour effacer les détails de l'employé
+    private void clearEmployeDetails() {
+        if (employeDetailsName != null) {
+            employeDetailsName.setText("");
+        }
+        if (employeDetailsWorking_hour != null) {
+            employeDetailsWorking_hour.setText("");
+        }
+        if (employeDetailsHour_worked != null) {
+            employeDetailsHour_worked.setText("");
+        }
+        if (employeDetailsPost != null) {
+            employeDetailsPost.setText("");
+        }
+    }
+
     // Modifier la méthode pour ouvrir une nouvelle fenêtre d'ajout de l'employé
     @FXML
     public void handleAddEmploye() {
@@ -119,6 +138,9 @@ public class EmployeController implements Initializable {
 
             // Créer une nouvelle scène et fenêtre
             Scene scene = new Scene(root);
+            // Appliquer le style sombre
+            scene.getStylesheets().add(getClass().getResource("/com/example/javaprojectrestau/styles/dark-theme.css").toExternalForm());
+
             Stage stage = new Stage();
             stage.setTitle("Ajouter un nouvel Employé");
             stage.setScene(scene);
@@ -128,53 +150,120 @@ public class EmployeController implements Initializable {
             stage.showAndWait();
 
         } catch (Exception e) {
-            showAlert("Erreur", "Une erreur est survenue lors de l'ouverture de la fenêtre d'ajout: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ajout d'un employé: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
     @FXML
     public void handleAddHourWorked() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/javaprojectrestau/add-hour_worked-view.fxml"));
-            Parent root = loader.load();
-
-            AddHourWorkedController controller = loader.getController();
-            controller.setOnHoursAddedCallback(() -> {
-                refreshEmployeList(); // Met à jour la liste et les détails
-            });
-
-            Scene scene = new Scene(root);
-            Stage stage = new Stage();
-            stage.setTitle("Ajouter des heures travaillées");
-            stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL);
-
-            stage.showAndWait();
-
-        } catch (Exception e) {
-            showAlert("Erreur", "Une erreur est survenue lors de l'ouverture du formulaire : " + e.getMessage());
-            e.printStackTrace();
+        if (selectedEmploye == null) {
+            showAlert(Alert.AlertType.WARNING, "Aucune sélection", "Veuillez sélectionner un employé.");
+            return;
         }
+
+        // Créer le dialogue personnalisé
+        Dialog<Integer> dialog = new Dialog<>();
+        dialog.setTitle("Ajouter des heures travaillées");
+        dialog.setHeaderText("Ajouter des heures pour " + selectedEmploye.getName());
+
+        // Appliquer le thème sombre au dialogue
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.getStylesheets().add(
+                getClass().getResource("/com/example/javaprojectrestau/styles/dark-theme.css").toExternalForm()
+        );
+        dialogPane.getStyleClass().add("dialog-pane");
+
+        // Ajouter les boutons
+        ButtonType buttonTypeOk = new ButtonType("Ajouter", ButtonBar.ButtonData.OK_DONE);
+        ButtonType buttonTypeCancel = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialogPane.getButtonTypes().addAll(buttonTypeOk, buttonTypeCancel);
+
+        // Créer et configurer le spinner pour les heures
+        Spinner<Integer> spinner = new Spinner<>(1, 100, 1);
+        spinner.setEditable(true);
+
+        // Créer le conteneur pour le spinner avec label
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+        grid.add(new Label("Heures:"), 0, 0);
+        grid.add(spinner, 1, 0);
+
+        dialogPane.setContent(grid);
+
+        // Convertir le résultat du dialogue
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == buttonTypeOk) {
+                return spinner.getValue();
+            }
+            return null;
+        });
+
+        // Afficher le dialogue et traiter le résultat
+        Optional<Integer> result = dialog.showAndWait();
+
+        result.ifPresent(hours -> {
+            try {
+                // Mettre à jour les heures travaillées dans le modèle de l'employé
+                int currentHours = selectedEmploye.getHour_worked();
+                selectedEmploye.setHour_worked(currentHours + hours);
+
+                // Mettre à jour l'employé dans la base de données
+                employeService.updateEmploye(selectedEmploye);
+
+                refreshEmployeList();
+                showAlert(Alert.AlertType.INFORMATION, "Succès",
+                        hours + " heure(s) ajoutée(s) pour " + selectedEmploye.getName());
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "Erreur",
+                        "Impossible d'ajouter les heures: " + e.getMessage());
+            }
+        });
     }
 
     @FXML
     private void handleDeleteEmploye() {
-        if (selectedEmploye != null) {
-            Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmation.setTitle("Confirmer la suppression");
-            confirmation.setHeaderText("Êtes-vous sûr de vouloir supprimer cet employé ?");
-            confirmation.setContentText(selectedEmploye.getName());
+        if (selectedEmploye == null) {
+            showAlert(Alert.AlertType.WARNING, "Aucune sélection", "Veuillez sélectionner un employé à supprimer.");
+            return;
+        }
 
-            confirmation.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.OK) {
-                    employeService.deleteEmploye(selectedEmploye.getId());
-                    clearFields();
-                    selectedEmploye = null;
-                    refreshEmployeList();
-                }
-            });
-        } else {
-            showAlert("Aucune sélection", "Veuillez sélectionner un employé à supprimer.");
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.setTitle("Confirmation de suppression");
+        confirmation.setHeaderText("Supprimer l'employé");
+        confirmation.setContentText("Êtes-vous sûr de vouloir supprimer " + selectedEmploye.getName() + " ?");
+
+        // Appliquer le thème sombre
+        DialogPane dialogPane = confirmation.getDialogPane();
+        dialogPane.getStylesheets().add(
+                getClass().getResource("/com/example/javaprojectrestau/styles/dark-theme.css").toExternalForm()
+        );
+        dialogPane.getStyleClass().add("dialog-pane");
+        dialogPane.getStyleClass().add("warning");
+
+        // Personnaliser les boutons
+        Button okButton = (Button) dialogPane.lookupButton(ButtonType.OK);
+        okButton.getStyleClass().add("button-danger");
+        okButton.setText("Supprimer");
+
+        Button cancelButton = (Button) dialogPane.lookupButton(ButtonType.CANCEL);
+        cancelButton.setText("Annuler");
+
+        Optional<ButtonType> result = confirmation.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                // Supprimer l'employé
+                employeService.deleteEmploye(selectedEmploye.getId());
+                selectedEmploye = null;
+                refreshEmployeList();
+                clearEmployeDetails();
+                showAlert(Alert.AlertType.INFORMATION, "Suppression réussie", "L'employé a été supprimé avec succès.");
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de supprimer l'employé: " + e.getMessage());
+            }
         }
     }
 
@@ -194,6 +283,14 @@ public class EmployeController implements Initializable {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+
+        // Appliquer le thème sombre
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(
+                getClass().getResource("/com/example/javaprojectrestau/styles/dark-theme.css").toExternalForm()
+        );
+        dialogPane.getStyleClass().add("dialog-pane");
+
         alert.showAndWait();
     }
 

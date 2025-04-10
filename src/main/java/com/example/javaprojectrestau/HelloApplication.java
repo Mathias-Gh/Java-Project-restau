@@ -3,7 +3,6 @@ package com.example.javaprojectrestau;
 import com.example.javaprojectrestau.db.DatabaseConnection;
 import com.example.javaprojectrestau.service.DishService;
 import com.example.javaprojectrestau.service.OrderService;
-import com.example.javaprojectrestau.service.EmployeService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -38,7 +37,6 @@ public class HelloApplication extends Application {
         // Initialiser les services et créer les tables si nécessaire
         DishService dishService = new DishService();
         OrderService orderService = new OrderService();
-        EmployeService employeService = new EmployeService();
         
         // Créer la mise en page principale
         mainLayout = new BorderPane();
@@ -46,28 +44,6 @@ public class HelloApplication extends Application {
         // Créer la barre latérale (sidebar)
         createSidebar();
         
-<<<<<<< Updated upstream
-        MenuItem ordersItem = new MenuItem("Gestion des commandes");
-        ordersItem.setOnAction(e -> loadView(stage, "order-view.fxml", "Gestion des commandes"));
-
-        MenuItem employesItem = new MenuItem("Gestion des employés");
-        employesItem.setOnAction(e -> loadView(stage, "employe-view.fxml", "Gestion des employés"));
-      
-        // Ajouter le nouvel élément pour afficher le menu avec une belle interface visuelle
-        MenuItem menuGalleryItem = new MenuItem("Affichage du Menu");
-        menuGalleryItem.setOnAction(e -> loadView(stage, "menu-gallery-view.fxml", "Menu du Restaurant"));
-        navigationMenu.getItems().addAll(dishesItem, ordersItem, employesItem, menuGalleryItem);
-
-        menuBar.getMenus().add(navigationMenu);
-        
-        // Charge la vue des plats par défaut
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("dish-view.fxml"));
-        VBox rootContent = new VBox();
-        rootContent.getChildren().add(menuBar);
-        rootContent.getChildren().add(fxmlLoader.load());
-        
-        Scene scene = new Scene(rootContent, 900, 600);
-=======
         // Charger la vue par défaut (dishes)
         loadContent("dish-view.fxml");
         
@@ -76,7 +52,6 @@ public class HelloApplication extends Application {
         scene.getStylesheets().add(getClass().getResource("styles/dark-theme.css").toExternalForm());
         
         // Configurer la fenêtre principale
->>>>>>> Stashed changes
         stage.setTitle("Système de Gestion de Restaurant");
         stage.setScene(scene);
         stage.show();
@@ -99,6 +74,7 @@ public class HelloApplication extends Application {
         Button dishesButton = createSidebarButton("Gestion des plats", "dish-view.fxml");
         Button ordersButton = createSidebarButton("Gestion des commandes", "order-view.fxml");
         Button menuGalleryButton = createSidebarButton("Affichage du Menu", "menu-gallery-view.fxml");
+        Button employeButton = createSidebarButton("Gestion des employés", "employe-view.fxml");
         
         // Activer initialement le bouton des plats
         activateSidebarButton(dishesButton);
@@ -109,7 +85,8 @@ public class HelloApplication extends Application {
             separator,
             dishesButton,
             ordersButton,
-            menuGalleryButton
+            menuGalleryButton,
+            employeButton
         );
         
         VBox.setVgrow(separator, Priority.ALWAYS); // Push the separator to take all available space
@@ -176,6 +153,7 @@ public class HelloApplication extends Application {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     public static void main(String[] args) {
         launch();
     }
