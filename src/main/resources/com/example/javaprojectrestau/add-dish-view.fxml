@@ -10,15 +10,16 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.javaprojectrestau.controller.AddDishController"
-      spacing="10.0" alignment="CENTER" prefWidth="600.0" prefHeight="450.0">
+      spacing="15.0" alignment="CENTER" prefWidth="600.0" prefHeight="450.0"
+      styleClass="content-pane">
       
     <padding>
         <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
     </padding>
     
-    <Label text="Ajouter un nouveau plat" style="-fx-font-size: 18; -fx-font-weight: bold"/>
+    <Label text="Ajouter un nouveau plat" styleClass="header-label"/>
     
-    <GridPane hgap="10" vgap="10" alignment="CENTER">
+    <GridPane hgap="15" vgap="15" alignment="CENTER">
         <Label text="Nom:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
         <TextField fx:id="nameField" promptText="Nom du plat" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
         

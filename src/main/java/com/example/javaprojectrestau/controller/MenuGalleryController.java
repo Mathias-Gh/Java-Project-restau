@@ -98,14 +98,14 @@ public class MenuGalleryController implements Initializable {
         card.setAlignment(Pos.TOP_CENTER);
         card.setSpacing(10);
         card.setPadding(new Insets(15));
-        card.setStyle("-fx-background-color: white; -fx-background-radius: 10;");
+        card.getStyleClass().add("dish-card"); // Utiliser la classe CSS du thème sombre
         
         // Ajouter un effet d'ombre
         DropShadow shadow = new DropShadow();
         shadow.setRadius(10.0);
         shadow.setOffsetX(3.0);
         shadow.setOffsetY(3.0);
-        shadow.setColor(Color.rgb(0, 0, 0, 0.2));
+        shadow.setColor(Color.rgb(0, 0, 0, 0.5));
         card.setEffect(shadow);
         
         // Créer et configurer l'ImageView pour le plat
@@ -124,16 +124,18 @@ public class MenuGalleryController implements Initializable {
         nameLabel.setWrapText(true);
         nameLabel.setPrefWidth(220);
         nameLabel.setTextAlignment(TextAlignment.CENTER);
+        nameLabel.getStyleClass().add("dish-name"); // Ajouter classe CSS
         
         // Créer un conteneur pour la catégorie avec un style distinctif
         Label categoryLabel = new Label(dish.getCategory());
         categoryLabel.setPadding(new Insets(5, 10, 5, 10));
-        categoryLabel.setStyle("-fx-background-color: #f8f9fa; -fx-background-radius: 15; -fx-text-fill: #495057;");
+        categoryLabel.getStyleClass().add("dish-category"); // Utiliser classe CSS
+        categoryLabel.setStyle("-fx-background-radius: 15;");
         
         // Créer le label pour le prix
         Label priceLabel = new Label(dish.getPrice() + " €");
         priceLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
-        priceLabel.setStyle("-fx-text-fill: #2C3E50;");
+        priceLabel.getStyleClass().add("dish-price"); // Utiliser classe CSS
         
         // Créer la zone de texte pour la description (limitée)
         String shortDesc = dish.getDescription();
@@ -146,20 +148,18 @@ public class MenuGalleryController implements Initializable {
         descArea.setEditable(false);
         descArea.setPrefHeight(80);
         descArea.setPrefWidth(220);
-        descArea.setStyle("-fx-control-inner-background: #f8f9fa; -fx-background-radius: 5;");
+        descArea.getStyleClass().add("dish-description"); // Utiliser classe CSS
         
         // Ajouter tous les composants à la carte
         card.getChildren().addAll(imageView, nameLabel, categoryLabel, priceLabel, descArea);
         
-        // Ajouter des effets hover
+        // Ajouter des effets hover avec les classes CSS du thème sombre
         card.setOnMouseEntered(e -> {
-            card.setStyle("-fx-background-color: #F8F9FA; -fx-background-radius: 10; -fx-border-color: #3498DB; -fx-border-radius: 10; -fx-border-width: 2;");
-            shadow.setColor(Color.rgb(0, 0, 0, 0.4));
+            card.getStyleClass().add("dish-card-hover");
         });
         
         card.setOnMouseExited(e -> {
-            card.setStyle("-fx-background-color: white; -fx-background-radius: 10;");
-            shadow.setColor(Color.rgb(0, 0, 0, 0.2));
+            card.getStyleClass().remove("dish-card-hover");
         });
         
         return card;
@@ -191,15 +191,15 @@ public class MenuGalleryController implements Initializable {
         // Créer un fond de couleur par défaut
         StackPane imagePlaceholder = new StackPane();
         imagePlaceholder.setPrefSize(220, 150);
-        imagePlaceholder.setStyle("-fx-background-color: #E0E0E0; -fx-background-radius: 5;");
+        imagePlaceholder.getStyleClass().add("image-placeholder"); // Utiliser classe CSS
         
         Label placeholderText = new Label("Image non disponible");
-        placeholderText.setStyle("-fx-text-fill: #757575;");
+        placeholderText.getStyleClass().add("placeholder-text"); // Utiliser classe CSS
         
         imagePlaceholder.getChildren().add(placeholderText);
         
         // Créer un visuel de l'image par défaut
-        BackgroundFill backgroundFill = new BackgroundFill(Color.LIGHTGRAY, new CornerRadii(5), Insets.EMPTY);
+        BackgroundFill backgroundFill = new BackgroundFill(Color.rgb(60, 60, 60), new CornerRadii(5), Insets.EMPTY); // Couleur plus sombre
         Background background = new Background(backgroundFill);
         Pane pane = new Pane();
         pane.setPrefSize(220, 150);

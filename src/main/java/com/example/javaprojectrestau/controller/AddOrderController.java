@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
@@ -82,6 +83,15 @@ public class AddOrderController implements Initializable {
         
         // Initialiser le total
         updateTotalPrice();
+        
+        // Appliquer le thème sombre à cette fenêtre si ce n'est pas déjà fait par le parent
+        Scene currentScene = customerNameField.getScene();
+        if (currentScene != null && !currentScene.getStylesheets().contains(
+                getClass().getResource("/com/example/javaprojectrestau/styles/dark-theme.css").toExternalForm())) {
+            currentScene.getStylesheets().add(
+                getClass().getResource("/com/example/javaprojectrestau/styles/dark-theme.css").toExternalForm()
+            );
+        }
     }
     
     private void refreshDishes(String category) {
@@ -211,6 +221,14 @@ public class AddOrderController implements Initializable {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+        
+        // Appliquer le thème sombre au dialogue
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(
+            getClass().getResource("/com/example/javaprojectrestau/styles/dark-theme.css").toExternalForm()
+        );
+        dialogPane.getStyleClass().add("dialog-pane");
+        
         alert.showAndWait();
     }
 }

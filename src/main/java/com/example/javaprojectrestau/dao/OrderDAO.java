@@ -131,7 +131,7 @@ public class OrderDAO {
                 }
                 inClause.append(")");
                 
-                String itemsSql = "SELECT * FROM order_items WHERE order_id IN " + inClause.toString();
+                String itemsSql = "SELECT * FROM order_items WHERE order_id IN " + inClause;
                 
                 try (Statement stmt = conn.createStatement();
                      ResultSet rs = stmt.executeQuery(itemsSql)) {

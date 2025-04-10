@@ -138,7 +138,12 @@ public class OrderController implements Initializable {
             AddOrderController controller = loader.getController();
             controller.setOnOrderAddedCallback(this::refreshOrders);
             
+            // Appliquer le style sombre à la fenêtre de dialogue
             Scene scene = new Scene(root);
+            scene.getStylesheets().add(
+                getClass().getResource("/com/example/javaprojectrestau/styles/dark-theme.css").toExternalForm()
+            );
+            
             Stage stage = new Stage();
             stage.setTitle("Nouvelle commande");
             stage.setScene(scene);
@@ -251,6 +256,14 @@ public class OrderController implements Initializable {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+        
+        // Appliquer le thème sombre au dialogue d'alerte
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(
+            getClass().getResource("/com/example/javaprojectrestau/styles/dark-theme.css").toExternalForm()
+        );
+        dialogPane.getStyleClass().add("dialog-pane");
+        
         alert.showAndWait();
     }
 }

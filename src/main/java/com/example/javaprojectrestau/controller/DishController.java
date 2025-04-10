@@ -16,6 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -247,10 +248,16 @@ public class DishController implements Initializable {
             
             // Créer une nouvelle scène et fenêtre
             Scene scene = new Scene(root);
+            // Appliquer le style sombre à la fenêtre modale
+            scene.getStylesheets().add(
+                getClass().getResource("/com/example/javaprojectrestau/styles/dark-theme.css").toExternalForm()
+            );
+            
             Stage stage = new Stage();
             stage.setTitle("Ajouter un nouveau plat");
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL); // Empêcher l'interaction avec la fenêtre principale
+            stage.initStyle(StageStyle.UTILITY); // Style plus compacte pour une fenêtre de dialogue
             
             // Afficher la fenêtre
             stage.showAndWait();
@@ -275,13 +282,17 @@ public class DishController implements Initializable {
             confirmation.setHeaderText("Êtes-vous sûr de vouloir supprimer ce plat ?");
             confirmation.setContentText("Le plat \"" + selectedDish.getName() + "\" sera définitivement supprimé.");
             
-            // Personnaliser le style de la fenêtre de confirmation
+            // Style pour le dialogue de suppression
             DialogPane dialogPane = confirmation.getDialogPane();
-            dialogPane.setStyle("-fx-background-color: #fadbd8;"); // Fond légèrement rouge
+            dialogPane.getStylesheets().add(
+                getClass().getResource("/com/example/javaprojectrestau/styles/dark-theme.css").toExternalForm()
+            );
+            dialogPane.getStyleClass().add("dialog-pane");
+            dialogPane.setStyle("-fx-background-color: #1e1e1e;"); // Fond légèrement rouge
             
             // Personnaliser les boutons
             Button okButton = (Button) dialogPane.lookupButton(ButtonType.OK);
-            okButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
+            okButton.getStyleClass().add("button-danger");
             okButton.setText("Supprimer");
             
             Button cancelButton = (Button) dialogPane.lookupButton(ButtonType.CANCEL);
@@ -289,6 +300,7 @@ public class DishController implements Initializable {
             
             // Ajouter une icône d'avertissement
             dialogPane.getStyleClass().add("alert");
+            dialogPane.getStyleClass().add("warning");
             
             confirmation.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
@@ -338,6 +350,14 @@ public class DishController implements Initializable {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+        
+        // Appliquer le style au dialogue
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(
+            getClass().getResource("/com/example/javaprojectrestau/styles/dark-theme.css").toExternalForm()
+        );
+        dialogPane.getStyleClass().add("dialog-pane");
+        
         alert.showAndWait();
     }
 }

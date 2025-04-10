@@ -6,19 +6,27 @@ import com.example.javaprojectrestau.service.OrderService;
 import com.example.javaprojectrestau.service.EmployeService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Connection;
 
 public class HelloApplication extends Application {
+    
+    private BorderPane mainLayout;
+    private VBox sidebarLayout;
+    private Button activeSidebarButton;
+    
     @Override
     public void start(Stage stage) throws IOException {
         // connexion à la base de données
@@ -32,13 +40,13 @@ public class HelloApplication extends Application {
         OrderService orderService = new OrderService();
         EmployeService employeService = new EmployeService();
         
-        // menu pour naviguer entre les vues
-        MenuBar menuBar = new MenuBar();
-        Menu navigationMenu = new Menu("Navigation");
+        // Créer la mise en page principale
+        mainLayout = new BorderPane();
         
-        MenuItem dishesItem = new MenuItem("Gestion des plats");
-        dishesItem.setOnAction(e -> loadView(stage, "dish-view.fxml", "Gestion des plats"));
+        // Créer la barre latérale (sidebar)
+        createSidebar();
         
+<<<<<<< Updated upstream
         MenuItem ordersItem = new MenuItem("Gestion des commandes");
         ordersItem.setOnAction(e -> loadView(stage, "order-view.fxml", "Gestion des commandes"));
 
@@ -59,9 +67,88 @@ public class HelloApplication extends Application {
         rootContent.getChildren().add(fxmlLoader.load());
         
         Scene scene = new Scene(rootContent, 900, 600);
+=======
+        // Charger la vue par défaut (dishes)
+        loadContent("dish-view.fxml");
+        
+        // Créer la scène avec thème sombre
+        Scene scene = new Scene(mainLayout, 1100, 700);
+        scene.getStylesheets().add(getClass().getResource("styles/dark-theme.css").toExternalForm());
+        
+        // Configurer la fenêtre principale
+>>>>>>> Stashed changes
         stage.setTitle("Système de Gestion de Restaurant");
         stage.setScene(scene);
         stage.show();
+    }
+    
+    private void createSidebar() {
+        sidebarLayout = new VBox();
+        sidebarLayout.getStyleClass().add("sidebar");
+        sidebarLayout.setPrefWidth(250);
+        
+        // Titre de l'application
+        Label titleLabel = new Label("Restaurant Manager");
+        titleLabel.getStyleClass().add("sidebar-header");
+        
+        // Séparateur
+        Separator separator = new Separator();
+        separator.setOpacity(0.3);
+        
+        // Boutons de navigation
+        Button dishesButton = createSidebarButton("Gestion des plats", "dish-view.fxml");
+        Button ordersButton = createSidebarButton("Gestion des commandes", "order-view.fxml");
+        Button menuGalleryButton = createSidebarButton("Affichage du Menu", "menu-gallery-view.fxml");
+        
+        // Activer initialement le bouton des plats
+        activateSidebarButton(dishesButton);
+        
+        // Ajouter tous les éléments à la sidebar
+        sidebarLayout.getChildren().addAll(
+            titleLabel, 
+            separator,
+            dishesButton,
+            ordersButton,
+            menuGalleryButton
+        );
+        
+        VBox.setVgrow(separator, Priority.ALWAYS); // Push the separator to take all available space
+        
+        // Ajouter la sidebar au layout principal
+        mainLayout.setLeft(sidebarLayout);
+    }
+    
+    private Button createSidebarButton(String text, String fxmlFile) {
+        Button button = new Button(text);
+        button.getStyleClass().add("sidebar-button");
+        button.setMaxWidth(Double.MAX_VALUE);
+        
+        button.setOnAction(e -> {
+            activateSidebarButton(button);
+            loadContent(fxmlFile);
+        });
+        
+        return button;
+    }
+    
+    private void activateSidebarButton(Button button) {
+        if (activeSidebarButton != null) {
+            activeSidebarButton.getStyleClass().remove("sidebar-button-active");
+        }
+        button.getStyleClass().add("sidebar-button-active");
+        activeSidebarButton = button;
+    }
+    
+    private void loadContent(String fxmlFile) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            Node content = loader.load();
+            content.getStyleClass().add("content-pane");
+            mainLayout.setCenter(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la vue: " + e.getMessage());
+        }
     }
     
     @Override
@@ -80,24 +167,6 @@ public class HelloApplication extends Application {
                 "2. Les identifiants dans DatabaseConnection.java sont corrects");
         
         alert.showAndWait();
-    }
-
-    private void loadView(Stage stage, String fxmlFile, String title) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
-            Node content = loader.load();
-            
-            VBox root = (VBox) stage.getScene().getRoot();
-            
-            // Conserve le menuBar et remplace le contenu
-            root.getChildren().remove(1, root.getChildren().size());
-            root.getChildren().add(content);
-            
-            stage.setTitle(title);
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la vue: " + e.getMessage());
-        }
     }
 
     private void showAlert(Alert.AlertType type, String title, String message) {

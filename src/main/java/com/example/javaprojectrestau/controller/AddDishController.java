@@ -113,6 +113,14 @@ public class AddDishController {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+        
+        // Appliquer le style au dialogue
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(
+            getClass().getResource("/com/example/javaprojectrestau/styles/dark-theme.css").toExternalForm()
+        );
+        dialogPane.getStyleClass().add("dialog-pane");
+        
         alert.showAndWait();
     }
     

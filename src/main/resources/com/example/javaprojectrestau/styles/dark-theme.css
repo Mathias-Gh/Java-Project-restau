@@ -1,0 +1,524 @@
+/* Styles de base pour le thème sombre */
+.root {
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: #e1e1e1;
+    -fx-font-family: 'System';
+}
+
+/* Couleurs principales */
+* {
+    -primary-color: #3498db;
+    -secondary-color: #2ecc71;
+    -accent-color: #9b59b6;
+    -warning-color: #e74c3c;
+    
+    -background-color: #1e1e1e;
+    -background-secondary-color: #2d2d2d;
+    -background-tertiary-color: #3c3c3c;
+    
+    -text-color: #e1e1e1;
+    -text-secondary-color: #a0a0a0;
+    -fx-background-insets: 0;
+}
+
+/* Navbar latérale */
+.sidebar {
+    -fx-background-color: -background-secondary-color;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);
+    -fx-padding: 10 0 10 0;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -text-color;
+    -fx-font-size: 14px;
+    -fx-padding: 15 20 15 20;
+    -fx-alignment: CENTER_LEFT;
+    -fx-graphic-text-gap: 20;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: -background-tertiary-color;
+}
+
+.sidebar-button-active {
+    -fx-background-color: -background-tertiary-color;
+    -fx-border-width: 0 0 0 3;
+    -fx-border-color: -primary-color;
+}
+
+.sidebar-header {
+    -fx-text-fill: -primary-color;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 15;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+}
+
+/* Panneau de contenu */
+.content-pane {
+    -fx-background-color: -background-color;
+    -fx-padding: 20;
+}
+
+/* Boutons */
+.button {
+    -fx-background-color: -background-tertiary-color;
+    -fx-text-fill: -text-color;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: derive(-background-tertiary-color, 10%);
+}
+
+.button-primary {
+    -fx-background-color: -primary-color;
+    -fx-text-fill: white;
+}
+
+.button-primary:hover {
+    -fx-background-color: derive(-primary-color, 10%);
+}
+
+.button-danger {
+    -fx-background-color: -warning-color;
+    -fx-text-fill: white;
+}
+
+.button-danger:hover {
+    -fx-background-color: derive(-warning-color, 10%);
+}
+
+/* Labels */
+.label {
+    -fx-text-fill: -text-color;
+}
+
+.header-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 10 0;
+}
+
+/* TextFields et TextAreas */
+.text-field {
+    -fx-background-color: -background-tertiary-color;
+    -fx-text-fill: -text-color;
+    -fx-highlight-fill: -primary-color;
+    -fx-background-radius: 3;
+    -fx-border-radius: 3;
+    -fx-prompt-text-fill: -text-secondary-color;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+    -fx-padding: 5 7 5 7;
+}
+
+.text-area {
+    -fx-background-color: -background-tertiary-color;
+    -fx-text-fill: -text-color;
+    -fx-highlight-fill: -primary-color;
+    -fx-background-radius: 3;
+    -fx-border-radius: 3;
+    -fx-prompt-text-fill: -text-secondary-color;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+}
+
+.text-area .content {
+    -fx-background-color: -background-tertiary-color;
+    -fx-background-radius: 3;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+}
+
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .content {
+    -fx-background-color: -background-tertiary-color;
+    -fx-background-radius: 3;
+    -fx-background-insets: 0;
+}
+
+/* ComboBox et MenuButton */
+.combo-box {
+    -fx-background-color: -background-tertiary-color;
+    -fx-background-radius: 3;
+    -fx-border-radius: 3;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: -text-color;
+    -fx-background-color: -background-tertiary-color;
+    -fx-background-radius: 3;
+    -fx-background-insets: 0;
+    -fx-padding: 3 7 3 7;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: -background-tertiary-color;
+    -fx-background-radius: 3;
+    -fx-background-insets: 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0, 0, 0);
+}
+
+.combo-box-popup .list-view .list-cell {
+    -fx-background-color: -background-tertiary-color;
+    -fx-text-fill: -text-color;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover {
+    -fx-background-color: -primary-color;
+}
+
+/* ListView */
+.list-view {
+    -fx-background-color: -background-tertiary-color;
+    -fx-background-radius: 5;
+}
+
+.list-cell {
+    -fx-background-color: -background-tertiary-color;
+    -fx-text-fill: -text-color;
+    -fx-padding: 10 15 10 15;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: derive(-primary-color, -20%);
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: derive(-background-tertiary-color, 10%);
+}
+
+/* TableView */
+.table-view {
+    -fx-background-color: -background-tertiary-color;
+    -fx-table-cell-border-color: transparent;
+    -fx-background-radius: 5;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: -background-secondary-color;
+    -fx-border-color: transparent transparent derive(-background-secondary-color, 10%) transparent;
+    -fx-border-width: 1;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-size: 35;
+    -fx-border-color: transparent;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: -text-color;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell {
+    -fx-background-color: -background-tertiary-color;
+    -fx-border-color: transparent;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: derive(-background-tertiary-color, 5%);
+}
+
+.table-row-cell:selected {
+    -fx-background-color: derive(-primary-color, -20%);
+}
+
+/* ScrollBar */
+.scroll-bar {
+    -fx-background-color: -background-tertiary-color;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: derive(-background-tertiary-color, 10%);
+    -fx-background-radius: 3;
+    -fx-background-insets: 0;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: derive(-background-tertiary-color, 15%);
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: -background-tertiary-color;
+    -fx-background-radius: 0;
+    -fx-padding: 3;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-background-color: -text-secondary-color;
+    -fx-shape: " ";
+    -fx-padding: 0.2em;
+}
+
+/* Correction spécifique pour les coins des ScrollPane/ScrollBar */
+.scroll-pane .corner,
+.scroll-bar:horizontal .corner,
+.scroll-bar:vertical .corner {
+    -fx-background-color: -background-tertiary-color;
+    -fx-background-insets: 0;
+}
+
+/* TilePane et FlowPane */
+.tile-pane, .flow-pane {
+    -fx-background-color: transparent;
+}
+
+/* Cards pour l'affichage en galerie */
+.dish-card {
+    -fx-background-color: -background-secondary-color;
+    -fx-background-radius: 10;
+    -fx-background-insets: 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0, 0, 0);
+}
+
+.dish-card:hover {
+    -fx-background-color: derive(-background-secondary-color, 5%);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 8, 0, 0, 0);
+    -fx-border-color: -primary-color;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+}
+
+/* Classes spécifiques pour la galerie de menu */
+.dish-card {
+    -fx-background-color: #2d2d2d;
+    -fx-background-radius: 10;
+    -fx-background-insets: 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 0);
+}
+
+.dish-card-hover {
+    -fx-background-color: #3c3c3c;
+    -fx-border-color: #3498db;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.7), 8, 0, 0, 0);
+}
+
+.dish-name {
+    -fx-text-fill: #e1e1e1;
+    -fx-font-weight: bold;
+}
+
+.dish-category {
+    -fx-background-color: #3c3c3c;
+    -fx-text-fill: #a0a0a0;
+}
+
+.dish-price {
+    -fx-text-fill: #3498db;
+    -fx-font-weight: bold;
+}
+
+.dish-description {
+    -fx-background-color: -background-tertiary-color;
+    -fx-background-radius: 3;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+}
+
+.dish-description .content {
+    -fx-background-color: -background-tertiary-color;
+    -fx-background-radius: 3;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+}
+
+.image-placeholder {
+    -fx-background-color: #3c3c3c;
+    -fx-background-radius: 5;
+}
+
+.placeholder-text {
+    -fx-text-fill: #a0a0a0;
+}
+
+.transparent-scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.transparent-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.transparent-scroll-pane .scroll-bar:vertical,
+.transparent-scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.transparent-scroll-pane .corner {
+    -fx-background-color: transparent;
+}
+
+/* Dialogue et alertes */
+.dialog-pane {
+    -fx-background-color: -background-color;
+    -fx-border-color: derive(-background-secondary-color, 10%);
+    -fx-border-width: 1px;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: -background-secondary-color;
+    -fx-padding: 10px;
+}
+
+.dialog-pane .header-panel .label {
+    -fx-text-fill: -text-color;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.dialog-pane .content {
+    -fx-background-color: -background-color;
+    -fx-padding: 15px;
+    -fx-text-fill: -text-color;
+}
+
+.dialog-pane .button-bar .container {
+    -fx-background-color: -background-color;
+}
+
+.dialog-pane > .button-bar > .container > .details-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -primary-color;
+}
+
+/* Boutons dans les dialogues */
+.dialog-pane .button {
+    -fx-background-color: -background-tertiary-color;
+    -fx-text-fill: -text-color;
+    -fx-background-radius: 3px;
+    -fx-min-width: 80px;
+    -fx-cursor: hand;
+}
+
+.dialog-pane .button:hover {
+    -fx-background-color: derive(-background-tertiary-color, 10%);
+}
+
+.dialog-pane .button:default {
+    -fx-background-color: -primary-color;
+    -fx-text-fill: white;
+}
+
+.dialog-pane .button:default:hover {
+    -fx-background-color: derive(-primary-color, 10%);
+}
+
+/* Dialogues spécifiques */
+.alert.warning .dialog-pane {
+    -fx-background-color: derive(-background-color, -5%);
+}
+
+.alert.warning .dialog-pane .header-panel {
+    -fx-background-color: derive(-warning-color, -40%);
+}
+
+.alert.warning .dialog-pane .header-panel .label {
+    -fx-text-fill: white;
+}
+
+.alert.confirmation .dialog-pane {
+    -fx-background-color: derive(-background-color, -5%);
+}
+
+.alert.confirmation .dialog-pane .header-panel {
+    -fx-background-color: derive(-background-secondary-color, -5%);
+}
+
+.alert.confirmation .dialog-pane .header-panel .label {
+    -fx-text-fill: -text-color;
+}
+
+/* Style pour les fenêtres modales (comme AddDishController) */
+.modal-dialog {
+    -fx-background-color: -background-color;
+}
+
+/* Hack pour forcer les styles sur tous les types de dialogues */
+.root * .dialog-pane {
+    -fx-background-color: -background-color;
+}
+
+.root * .dialog-pane:header .header-panel {
+    -fx-background-color: -background-secondary-color;
+}
+
+.root * .dialog-pane:header .header-panel .label {
+    -fx-text-fill: -text-color;
+}
+
+.root * .dialog-pane > .content.label {
+    -fx-text-fill: -text-color;
+    -fx-wrap-text: true;
+}
+
+/* Spinner (numérique) */
+.spinner {
+    -fx-background-color: -background-tertiary-color;
+    -fx-background-radius: 3;
+    -fx-border-radius: 3;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+}
+
+.spinner .text-field {
+    -fx-background-color: -background-tertiary-color;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: derive(-background-tertiary-color, 5%);
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+}
+
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: derive(-background-tertiary-color, 10%);
+}
+
+/* ScrollPane spécifiquement */
+.scroll-pane {
+    -fx-background-color: -background-color;
+    -fx-background-radius: 3;
+    -fx-border-radius: 3;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: -background-tertiary-color;
+}
+
+/* Classe transparente pour les conteneurs */
+.transparent {
+    -fx-background-color: transparent;
+}
