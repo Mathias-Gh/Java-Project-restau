@@ -101,6 +101,7 @@ public class HelloApplication extends Application {
         Button ordersButton = createSidebarButton("Gestion des commandes", "order-view.fxml");
         Button tablesButton = createSidebarButton("Gestion des tables", "table-view.fxml"); // Nouveau bouton
         Button menuGalleryButton = createSidebarButton("Affichage du Menu", "menu-gallery-view.fxml");
+        Button statisticsButton = createSidebarButton("Statistiques", "statistics-view.fxml"); // Nouveau bouton
         Button employeButton = createSidebarButton("Gestion des employés", "employe-view.fxml");
         Button financialButton = createSidebarButton("Rapport Financier", "financial-view.fxml");
         
@@ -126,6 +127,7 @@ public class HelloApplication extends Application {
             ordersButton,
             tablesButton, // Ajouter le bouton des tables
             menuGalleryButton,
+            statisticsButton, // Ajout du bouton statistiques
             employeButton,
             financialButton
         );
