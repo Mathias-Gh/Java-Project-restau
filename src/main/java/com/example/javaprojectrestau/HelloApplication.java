@@ -3,6 +3,7 @@ package com.example.javaprojectrestau;
 import com.example.javaprojectrestau.db.DatabaseConnection;
 import com.example.javaprojectrestau.service.DishService;
 import com.example.javaprojectrestau.service.OrderService;
+import com.example.javaprojectrestau.service.EmployeService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -29,6 +30,7 @@ public class HelloApplication extends Application {
         // Initialiser les services et créer les tables si nécessaire
         DishService dishService = new DishService();
         OrderService orderService = new OrderService();
+        EmployeService employeService = new EmployeService();
         
         // menu pour naviguer entre les vues
         MenuBar menuBar = new MenuBar();
@@ -39,12 +41,15 @@ public class HelloApplication extends Application {
         
         MenuItem ordersItem = new MenuItem("Gestion des commandes");
         ordersItem.setOnAction(e -> loadView(stage, "order-view.fxml", "Gestion des commandes"));
-        
+
+        MenuItem employesItem = new MenuItem("Gestion des employés");
+        employesItem.setOnAction(e -> loadView(stage, "employe-view.fxml", "Gestion des employés"));
+      
         // Ajouter le nouvel élément pour afficher le menu avec une belle interface visuelle
         MenuItem menuGalleryItem = new MenuItem("Affichage du Menu");
         menuGalleryItem.setOnAction(e -> loadView(stage, "menu-gallery-view.fxml", "Menu du Restaurant"));
-        
-        navigationMenu.getItems().addAll(dishesItem, ordersItem, menuGalleryItem);
+        navigationMenu.getItems().addAll(dishesItem, ordersItem, employesItem, menuGalleryItem);
+
         menuBar.getMenus().add(navigationMenu);
         
         // Charge la vue des plats par défaut
@@ -102,7 +107,6 @@ public class HelloApplication extends Application {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
     public static void main(String[] args) {
         launch();
     }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.javaprojectrestau.controller.AddHourWorkedController"
+      spacing="10.0" alignment="CENTER" prefWidth="400.0" prefHeight="300.0">
+
+    <padding>
+        <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+    </padding>
+
+    <Label text="Ajouter des heures travaillées" style="-fx-font-size: 18; -fx-font-weight: bold"/>
+
+    <GridPane hgap="10" vgap="10" alignment="CENTER">
+        <Label text="Nom de l'employé:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <ComboBox fx:id="employeeComboBox" promptText="Sélectionnez un employé" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="Heures travaillées:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <Spinner fx:id="hourWorkedSpinner" min="1" max="100" initialValue="1" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="200.0" />
+        </columnConstraints>
+    </GridPane>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#handleCancel"/>
+        <Button text="Ajouter" onAction="#handleAddHourWorked" styleClass="button-primary"/>
+    </HBox>
+</VBox>
