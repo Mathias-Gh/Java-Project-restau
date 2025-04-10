@@ -12,9 +12,12 @@ Une application Java complète pour la gestion des opérations d'un restaurant, 
 
 ## Captures d'écran
 
-![Gestion des tables](src/main/resources/com/example/javaprojectrestau/images/screenshot_tables.png)
-![Menu](src/main/resources/com/example/javaprojectrestau/images/screenshot_menu.png)
-![Gestion des commandes](src/main/resources/com/example/javaprojectrestau/images/screenshot_orders.png)
+![Gestion des plats](src/main/img/GestionDesPlats.png)
+![Menu](src/main/img/Menu.png)
+![Gestion des commandes](src/main/img/Commandes.png)
+![Employées](src/main/img/Employes.png)
+![Tables](src/main/img/Tables.png)
+![Rapports Financiers](src/main/img/RapportFinancier.png)
 
 ## Technologies utilisées
 
