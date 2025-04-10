@@ -6,14 +6,13 @@ import com.example.javaprojectrestau.model.OrderItem;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class OrderDAO {
 
+    /**
+     * S'assure que la table orders et la colonne table_id existent
+     */
     public void createTablesIfNotExist() {
         Connection conn = DatabaseConnection.getConnection();
         if (conn == null) {
@@ -21,28 +20,54 @@ public class OrderDAO {
             return;
         }
         
-        try (Statement stmt = conn.createStatement()) {
-            // Table des commandes
-            stmt.execute("CREATE TABLE IF NOT EXISTS orders (" +
-                    "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
-                    "customer_name VARCHAR(100) NOT NULL," +
-                    "order_time TIMESTAMP," +
-                    "status VARCHAR(20) NOT NULL," +
-                    "notes TEXT" +
-                    ")");
-            System.out.println("Table 'orders' créée ou déjà existante.");
+        try {
+            boolean addTableIdColumn = false;
             
-            // Table des items de commande
-            stmt.execute("CREATE TABLE IF NOT EXISTS order_items (" +
-                    "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
-                    "order_id BIGINT NOT NULL," +
-                    "dish_id BIGINT NOT NULL," +
-                    "dish_name VARCHAR(100) NOT NULL," +
-                    "quantity INT NOT NULL," +
-                    "price DECIMAL(10,2) NOT NULL," +
-                    "FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE" +
-                    ")");
-            System.out.println("Table 'order_items' créée ou déjà existante.");
+            // Créer la table orders si elle n'existe pas
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute("CREATE TABLE IF NOT EXISTS orders (" +
+                        "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
+                        "customer_name VARCHAR(100) NOT NULL," +
+                        "order_time TIMESTAMP," +
+                        "status VARCHAR(20) NOT NULL," +
+                        "notes TEXT" +
+                        ")");
+                System.out.println("Table 'orders' créée ou déjà existante.");
+                
+                // Vérifier si la colonne table_id existe
+                try {
+                    ResultSet rs = stmt.executeQuery("SELECT table_id FROM orders LIMIT 1");
+                    rs.close();
+                    // Si on arrive ici, la colonne table_id existe
+                    System.out.println("La colonne 'table_id' existe déjà dans la table 'orders'.");
+                } catch (SQLException e) {
+                    // La colonne n'existe pas, on va l'ajouter plus tard
+                    addTableIdColumn = true;
+                }
+                
+                // Ajouter la colonne table_id si nécessaire
+                if (addTableIdColumn) {
+                    try {
+                        stmt.execute("ALTER TABLE orders ADD COLUMN table_id BIGINT");
+                        System.out.println("Colonne 'table_id' ajoutée à la table 'orders'.");
+                    } catch (SQLException e) {
+                        // Ignorer si la colonne existe déjà
+                        System.err.println("Erreur lors de l'ajout de la colonne table_id: " + e.getMessage());
+                    }
+                }
+                
+                // Table des items de commande
+                stmt.execute("CREATE TABLE IF NOT EXISTS order_items (" +
+                        "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
+                        "order_id BIGINT NOT NULL," +
+                        "dish_id BIGINT NOT NULL," +
+                        "dish_name VARCHAR(100) NOT NULL," +
+                        "quantity INT NOT NULL," +
+                        "price DECIMAL(10,2) NOT NULL," +
+                        "FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE" +
+                        ")");
+                System.out.println("Table 'order_items' créée ou déjà existante.");
+            }
         } catch (SQLException e) {
             System.err.println("Erreur lors de la création des tables: " + e.getMessage());
             e.printStackTrace();
@@ -208,20 +233,86 @@ public class OrderDAO {
         try {
             conn.setAutoCommit(false);
             
+            // On vérifie d'abord si la colonne table_id existe dans la table orders
+            boolean tableIdExists = false;
+            try (Statement stmt = conn.createStatement()) {
+                try {
+                    ResultSet rs = stmt.executeQuery("SELECT table_id FROM orders LIMIT 1");
+                    rs.close();
+                    tableIdExists = true;
+                } catch (SQLException e) {
+                    // La colonne n'existe pas, on va l'ajouter
+                    try {
+                        stmt.execute("ALTER TABLE orders ADD COLUMN table_id BIGINT");
+                        System.out.println("Colonne 'table_id' ajoutée à la table 'orders'.");
+                        tableIdExists = true;
+                    } catch (SQLException ex) {
+                        System.err.println("Impossible d'ajouter la colonne table_id: " + ex.getMessage());
+                    }
+                }
+            }
+            
             if (order.getId() == null) {
                 // Nouvelle commande
-                String sql = "INSERT INTO orders (customer_name, order_time, status, notes) VALUES (?, ?, ?, ?)";
-                try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                    pstmt.setString(1, order.getCustomerName());
-                    pstmt.setTimestamp(2, Timestamp.valueOf(order.getOrderTime()));
-                    pstmt.setString(3, order.getStatus());
-                    pstmt.setString(4, order.getNotes());
+                String sql;
+                
+                if (tableIdExists) {
+                    if (order.getTableId() == null) {
+                        // Si tableId est null mais la colonne existe, utiliser NULL dans SQL
+                        sql = "INSERT INTO orders (customer_name, order_time, status, notes, table_id) VALUES (?, ?, ?, ?, NULL)";
+                        
+                        try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                            pstmt.setString(1, order.getCustomerName());
+                            pstmt.setTimestamp(2, Timestamp.valueOf(order.getOrderTime()));
+                            pstmt.setString(3, order.getStatus());
+                            pstmt.setString(4, order.getNotes());
+                            
+                            int affectedRows = pstmt.executeUpdate();
+                            if (affectedRows > 0) {
+                                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                                    if (generatedKeys.next()) {
+                                        order.setId(generatedKeys.getLong(1));
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        // Si tableId a une valeur et la colonne existe
+                        sql = "INSERT INTO orders (customer_name, order_time, status, notes, table_id) VALUES (?, ?, ?, ?, ?)";
+                        
+                        try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                            pstmt.setString(1, order.getCustomerName());
+                            pstmt.setTimestamp(2, Timestamp.valueOf(order.getOrderTime()));
+                            pstmt.setString(3, order.getStatus());
+                            pstmt.setString(4, order.getNotes());
+                            pstmt.setLong(5, order.getTableId());
+                            
+                            int affectedRows = pstmt.executeUpdate();
+                            if (affectedRows > 0) {
+                                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                                    if (generatedKeys.next()) {
+                                        order.setId(generatedKeys.getLong(1));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // Si la colonne n'existe pas
+                    sql = "INSERT INTO orders (customer_name, order_time, status, notes) VALUES (?, ?, ?, ?)";
                     
-                    int affectedRows = pstmt.executeUpdate();
-                    if (affectedRows > 0) {
-                        try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-                            if (generatedKeys.next()) {
-                                order.setId(generatedKeys.getLong(1));
+                    try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                        pstmt.setString(1, order.getCustomerName());
+                        pstmt.setTimestamp(2, Timestamp.valueOf(order.getOrderTime()));
+                        pstmt.setString(3, order.getStatus());
+                        pstmt.setString(4, order.getNotes());
+                        
+                        int affectedRows = pstmt.executeUpdate();
+                        if (affectedRows > 0) {
+                            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                                if (generatedKeys.next()) {
+                                    order.setId(generatedKeys.getLong(1));
+                                }
                             }
                         }
                     }
@@ -245,14 +336,34 @@ public class OrderDAO {
                 }
             } else {
                 // Mise à jour d'une commande existante
-                String sql = "UPDATE orders SET customer_name = ?, status = ?, notes = ? WHERE id = ?";
-                try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                    pstmt.setString(1, order.getCustomerName());
-                    pstmt.setString(2, order.getStatus());
-                    pstmt.setString(3, order.getNotes());
-                    pstmt.setLong(4, order.getId());
+                String sql;
+                if (tableIdExists) {
+                    sql = "UPDATE orders SET customer_name = ?, status = ?, notes = ?, table_id = ? WHERE id = ?";
                     
-                    pstmt.executeUpdate();
+                    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                        pstmt.setString(1, order.getCustomerName());
+                        pstmt.setString(2, order.getStatus());
+                        pstmt.setString(3, order.getNotes());
+                        
+                        if (order.getTableId() != null) {
+                            pstmt.setLong(4, order.getTableId());
+                        } else {
+                            pstmt.setNull(4, Types.BIGINT);
+                        }
+                        
+                        pstmt.setLong(5, order.getId());
+                        pstmt.executeUpdate();
+                    }
+                } else {
+                    sql = "UPDATE orders SET customer_name = ?, status = ?, notes = ? WHERE id = ?";
+                    
+                    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                        pstmt.setString(1, order.getCustomerName());
+                        pstmt.setString(2, order.getStatus());
+                        pstmt.setString(3, order.getNotes());
+                        pstmt.setLong(4, order.getId());
+                        pstmt.executeUpdate();
+                    }
                 }
             }
             
@@ -330,7 +441,19 @@ public class OrderDAO {
         String status = rs.getString("status");
         String notes = rs.getString("notes");
         
-        return new Order(id, customerName, orderTime, status, notes);
+        Order order = new Order(id, customerName, orderTime, status, notes);
+        
+        // Vérifier si la colonne table_id existe avant d'essayer de la lire
+        try {
+            long tableId = rs.getLong("table_id");
+            if (!rs.wasNull()) {
+                order.setTableId(tableId);
+            }
+        } catch (SQLException e) {
+            // Ignorer silencieusement si la colonne n'existe pas encore
+        }
+        
+        return order;
     }
     
     private OrderItem mapResultSetToOrderItem(ResultSet rs) throws SQLException {

@@ -12,6 +12,7 @@ public class Order {
     private String status; // "EN_ATTENTE", "PREPAREE", "ANNULEE"
     private List<OrderItem> items;
     private String notes;
+    private Long tableId; // Nouvel attribut pour lier une table à une commande
     
     public Order() {
         this.orderTime = LocalDateTime.now();
@@ -46,6 +47,10 @@ public class Order {
     
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
+    
+    // Nouveau getter et setter pour tableId
+    public Long getTableId() { return tableId; }
+    public void setTableId(Long tableId) { this.tableId = tableId; }
     
     // Méthodes utilitaires
     public void addItem(OrderItem item) {
