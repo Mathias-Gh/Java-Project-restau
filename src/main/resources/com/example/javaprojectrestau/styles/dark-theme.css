@@ -539,3 +539,103 @@
 .transparent {
     -fx-background-color: transparent;
 }
+
+/* Styles spécifiques pour la vue financière */
+.financial-value {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.positive-value {
+    -fx-text-fill: #2ecc71;
+}
+
+.negative-value {
+    -fx-text-fill: #e74c3c;
+}
+
+/* Styles pour les DatePicker */
+.date-picker {
+    -fx-background-color: -background-tertiary-color;
+    -fx-background-radius: 3;
+    -fx-border-radius: 3;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: derive(-background-tertiary-color, 5%);
+    -fx-background-radius: 0 3 3 0;
+}
+
+.date-picker .arrow-button:hover {
+    -fx-background-color: derive(-background-tertiary-color, 10%);
+}
+
+.date-picker .cell {
+    -fx-background-color: -background-tertiary-color;
+    -fx-text-fill: -text-color;
+}
+
+.date-picker .cell:hover {
+    -fx-background-color: derive(-background-tertiary-color, 10%);
+}
+
+.date-picker .cell:selected {
+    -fx-background-color: -primary-color;
+    -fx-text-fill: white;
+}
+
+.date-picker-popup {
+    -fx-background-color: -background-secondary-color;
+    -fx-background-radius: 3;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);
+}
+
+.date-picker-popup .month-year-pane {
+    -fx-background-color: -background-tertiary-color;
+}
+
+.date-picker-popup .month-year-pane .label {
+    -fx-text-fill: -text-color;
+}
+
+.date-picker-popup .week-number-cell {
+    -fx-text-fill: -text-secondary-color;
+}
+
+.date-picker-popup .spinner .button .left-arrow,
+.date-picker-popup .spinner .button .right-arrow {
+    -fx-background-color: -text-color;
+}
+
+/* Styles pour les onglets dans la vue financière */
+.tab-pane {
+    -fx-tab-min-width: 120px;
+}
+
+.tab {
+    -fx-background-color: -background-secondary-color;
+    -fx-background-radius: 3 3 0 0;
+}
+
+.tab:selected {
+    -fx-background-color: -primary-color;
+}
+
+.tab .tab-label {
+    -fx-text-fill: -text-color;
+}
+
+.tab:selected .tab-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.tab-pane > .tab-header-area > .tab-header-background {
+    -fx-background-color: -background-color;
+    -fx-border-color: transparent transparent derive(-background-tertiary-color, 10%) transparent;
+    -fx-border-width: 0 0 1 0;
+}

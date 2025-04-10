@@ -75,6 +75,7 @@ public class HelloApplication extends Application {
         Button ordersButton = createSidebarButton("Gestion des commandes", "order-view.fxml");
         Button menuGalleryButton = createSidebarButton("Affichage du Menu", "menu-gallery-view.fxml");
         Button employeButton = createSidebarButton("Gestion des employés", "employe-view.fxml");
+        Button financialButton = createSidebarButton("Rapport Financier", "financial-view.fxml");
         
         // Activer initialement le bouton des plats
         activateSidebarButton(dishesButton);
@@ -86,7 +87,8 @@ public class HelloApplication extends Application {
             dishesButton,
             ordersButton,
             menuGalleryButton,
-            employeButton
+            employeButton,
+            financialButton
         );
         
         VBox.setVgrow(separator, Priority.ALWAYS); // Push the separator to take all available space
