@@ -3,6 +3,8 @@ package com.example.javaprojectrestau;
 import com.example.javaprojectrestau.db.DatabaseConnection;
 import com.example.javaprojectrestau.service.DishService;
 import com.example.javaprojectrestau.service.OrderService;
+import com.example.javaprojectrestau.service.TimerService;
+import com.example.javaprojectrestau.component.TimerComponent;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -26,8 +28,19 @@ public class HelloApplication extends Application {
     private VBox sidebarLayout;
     private Button activeSidebarButton;
     
+    // Ajouter le service de chronomètre
+    private TimerComponent timerComponent;
+    
+    // Singleton instance pour l'accès global
+    private static HelloApplication instance;
+    
+    // Le TimerService doit être public pour être accessible aux contrôleurs
+    public static TimerService timerService;
+    
     @Override
     public void start(Stage stage) throws IOException {
+        instance = this;
+        
         // connexion à la base de données
         Connection connection = DatabaseConnection.getConnection();
         if (connection == null) {
@@ -38,8 +51,14 @@ public class HelloApplication extends Application {
         DishService dishService = new DishService();
         OrderService orderService = new OrderService();
         
+        // Initialiser le service de chronomètre ici
+        timerService = new TimerService();
+        
         // Créer la mise en page principale
         mainLayout = new BorderPane();
+        
+        // Créer le composant de chronomètre
+        timerComponent = new TimerComponent(timerService);
         
         // Créer la barre latérale (sidebar)
         createSidebar();
@@ -57,6 +76,10 @@ public class HelloApplication extends Application {
         stage.show();
     }
     
+    public static HelloApplication getInstance() {
+        return instance;
+    }
+    
     private void createSidebar() {
         sidebarLayout = new VBox();
         sidebarLayout.getStyleClass().add("sidebar");
@@ -65,6 +88,9 @@ public class HelloApplication extends Application {
         // Titre de l'application
         Label titleLabel = new Label("Restaurant Manager");
         titleLabel.getStyleClass().add("sidebar-header");
+        
+        // Ajouter le composant de chronomètre
+        TimerComponent timerComponent = new TimerComponent(timerService);
         
         // Séparateur
         Separator separator = new Separator();
@@ -75,18 +101,31 @@ public class HelloApplication extends Application {
         Button ordersButton = createSidebarButton("Gestion des commandes", "order-view.fxml");
         Button menuGalleryButton = createSidebarButton("Affichage du Menu", "menu-gallery-view.fxml");
         Button employeButton = createSidebarButton("Gestion des employés", "employe-view.fxml");
+        Button financialButton = createSidebarButton("Rapport Financier", "financial-view.fxml");
         
         // Activer initialement le bouton des plats
         activateSidebarButton(dishesButton);
         
+        // Observer la propriété canTakeOrders pour désactiver le bouton des commandes
+        timerService.canTakeOrdersProperty().addListener((obs, oldVal, newVal) -> {
+            ordersButton.setDisable(!newVal);
+            if (!newVal) {
+                ordersButton.setText("Commandes (FERMÉES)");
+            } else {
+                ordersButton.setText("Gestion des commandes");
+            }
+        });
+        
         // Ajouter tous les éléments à la sidebar
         sidebarLayout.getChildren().addAll(
-            titleLabel, 
+            titleLabel,
+            timerComponent,
             separator,
             dishesButton,
             ordersButton,
             menuGalleryButton,
-            employeButton
+            employeButton,
+            financialButton
         );
         
         VBox.setVgrow(separator, Priority.ALWAYS); // Push the separator to take all available space
