@@ -3,6 +3,7 @@ package com.example.javaprojectrestau;
 import com.example.javaprojectrestau.db.DatabaseConnection;
 import com.example.javaprojectrestau.service.DishService;
 import com.example.javaprojectrestau.service.OrderService;
+import com.example.javaprojectrestau.service.EmployeService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -29,6 +30,7 @@ public class HelloApplication extends Application {
         // Initialiser les services et créer les tables si nécessaire
         DishService dishService = new DishService();
         OrderService orderService = new OrderService();
+        EmployeService employeService = new EmployeService();
         
         // Créer un menu pour naviguer entre les vues
         MenuBar menuBar = new MenuBar();
@@ -39,8 +41,11 @@ public class HelloApplication extends Application {
         
         MenuItem ordersItem = new MenuItem("Gestion des commandes");
         ordersItem.setOnAction(e -> loadView(stage, "order-view.fxml", "Gestion des commandes"));
-        
-        navigationMenu.getItems().addAll(dishesItem, ordersItem);
+
+        MenuItem employesItem = new MenuItem("Gestion des employés");
+        employesItem.setOnAction(e -> loadView(stage, "employe-view.fxml", "Gestion des employés"));
+
+        navigationMenu.getItems().addAll(dishesItem, ordersItem, employesItem);
         menuBar.getMenus().add(navigationMenu);
         
         // Charger la vue des plats par défaut
@@ -98,7 +103,6 @@ public class HelloApplication extends Application {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
     public static void main(String[] args) {
         launch();
     }

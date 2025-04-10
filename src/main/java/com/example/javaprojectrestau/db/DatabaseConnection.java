@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.sql.Blob;
 
 public class DatabaseConnection {
-    // Configuration MySQL pour macOS - pas de mot de passe par défaut
+    // Configuration MySQL pour macOS pas de mot de passe par défaut
     private static final String URL = "jdbc:mysql://localhost:3306/restaurant_db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false";
     private static final String USER = "root";  // Utilisateur par défaut sur macOS
     private static final String PASSWORD = "";  // Mot de passe vide par défaut sur macOS
@@ -22,7 +22,7 @@ public class DatabaseConnection {
                 // Charger explicitement le pilote MySQL
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 
-                // Essayer d'abord sans mot de passe (configuration macOS)
+                // Essayer d'abord sans mots de passe (configuration macOS)
                 try {
                     connection = DriverManager.getConnection(URL, USER, PASSWORD);
                     System.out.println("Connexion à la base de données établie avec succès.");
@@ -61,7 +61,7 @@ public class DatabaseConnection {
                         "category VARCHAR(50)," +
                         "image LONGBLOB" +
                         ")");
-                
+
                 // Vérifier si la colonne image existe déjà
                 ResultSet rs = connection.getMetaData().getColumns(null, null, "dishes", "image");
                 if (!rs.next()) {
@@ -69,7 +69,15 @@ public class DatabaseConnection {
                     stmt.execute("ALTER TABLE dishes ADD COLUMN image LONGBLOB");
                     System.out.println("Colonne 'image' ajoutée à la table 'dishes'.");
                 }
+                stmt.execute("CREATE TABLE IF NOT EXISTS employes (" +
+                        "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
+                        "name VARCHAR(100) NOT NULL UNIQUE," +
+                        "working_hour INT NOT NULL," +
+                        "hour_worked INT," +
+                        "post VARCHAR(50)" +
+                        ")");
             }
+
         } catch (SQLException e) {
             System.err.println("Erreur lors de l'initialisation de la base de données: " + e.getMessage());
             e.printStackTrace();
@@ -97,6 +105,8 @@ public class DatabaseConnection {
                         ")");
                 System.out.println("Table 'dishes' créée dans la base de données en mémoire avec support d'images.");
             }
+
+
         } catch (Exception e) {
             System.err.println("Impossible de créer une base de données de secours: " + e.getMessage());
             e.printStackTrace();
