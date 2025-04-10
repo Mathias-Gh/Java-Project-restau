@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.javaprojectrestau.controller.AddTableController"
+      spacing="15.0" alignment="CENTER" prefWidth="500.0" prefHeight="350.0"
+      styleClass="content-pane">
+      
+    <padding>
+        <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+    </padding>
+    
+    <Label fx:id="dialogTitleLabel" text="Ajouter une nouvelle table" styleClass="header-label"/>
+    
+    <GridPane hgap="15" vgap="15" alignment="CENTER">
+        <Label text="Numéro:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="numeroField" promptText="ex: A1, B2, etc." GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        
+        <Label text="Capacité:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <Spinner fx:id="capaciteSpinner" min="1" max="20" initialValue="4" editable="true" 
+                GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        
+        <Label text="Emplacement:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <ComboBox fx:id="emplacementComboBox" promptText="Choisir un emplacement" editable="true"
+                 GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Intérieur" />
+                    <String fx:value="Terrasse" />
+                    <String fx:value="Étage" />
+                    <String fx:value="Fenêtre" />
+                    <String fx:value="Bar" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+        
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="120.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="250.0" />
+        </columnConstraints>
+    </GridPane>
+    
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#handleCancel" />
+        <Button fx:id="saveButton" text="Ajouter" onAction="#handleSave" styleClass="button-primary"/>
+    </HBox>
+</VBox>

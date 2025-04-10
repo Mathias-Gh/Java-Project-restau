@@ -99,6 +99,7 @@ public class HelloApplication extends Application {
         // Boutons de navigation
         Button dishesButton = createSidebarButton("Gestion des plats", "dish-view.fxml");
         Button ordersButton = createSidebarButton("Gestion des commandes", "order-view.fxml");
+        Button tablesButton = createSidebarButton("Gestion des tables", "table-view.fxml"); // Nouveau bouton
         Button menuGalleryButton = createSidebarButton("Affichage du Menu", "menu-gallery-view.fxml");
         Button employeButton = createSidebarButton("Gestion des employés", "employe-view.fxml");
         Button financialButton = createSidebarButton("Rapport Financier", "financial-view.fxml");
@@ -123,6 +124,7 @@ public class HelloApplication extends Application {
             separator,
             dishesButton,
             ordersButton,
+            tablesButton, // Ajouter le bouton des tables
             menuGalleryButton,
             employeButton,
             financialButton

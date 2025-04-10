@@ -3,8 +3,10 @@ package com.example.javaprojectrestau.controller;
 import com.example.javaprojectrestau.model.Dish;
 import com.example.javaprojectrestau.model.Order;
 import com.example.javaprojectrestau.model.OrderItem;
+import com.example.javaprojectrestau.model.Table;
 import com.example.javaprojectrestau.service.DishService;
 import com.example.javaprojectrestau.service.OrderService;
+import com.example.javaprojectrestau.service.TableService;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,11 +15,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AddOrderController implements Initializable {
@@ -35,15 +40,19 @@ public class AddOrderController implements Initializable {
     @FXML private TableColumn<OrderItem, BigDecimal> totalColumn;
     
     @FXML private Label totalPriceLabel;
+    @FXML private Label tableInfoLabel; // Nouveau label pour afficher la table
     
     private final DishService dishService = new DishService();
     private final OrderService orderService = new OrderService();
+    private final TableService tableService = new TableService();
     
     private ObservableList<Dish> dishes = FXCollections.observableArrayList();
     private ObservableList<OrderItem> orderItems = FXCollections.observableArrayList();
     
     private Order currentOrder = new Order();
     private Runnable onOrderAddedCallback;
+    private Long tableId; // ID de la table associée à la commande
+    private Table selectedTable; // Table associée à la commande
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -182,6 +191,11 @@ public class AddOrderController implements Initializable {
         currentOrder.setCustomerName(customerName);
         currentOrder.setNotes(notesTextArea.getText());
         
+        // Associer la table à la commande si spécifiée
+        if (tableId != null) {
+            currentOrder.setTableId(tableId);
+        }
+        
         // Ajouter les items à la commande
         currentOrder.getItems().clear();
         currentOrder.getItems().addAll(orderItems);
@@ -230,5 +244,48 @@ public class AddOrderController implements Initializable {
         dialogPane.getStyleClass().add("dialog-pane");
         
         alert.showAndWait();
+    }
+    
+    // Setter pour l'ID de la table
+    public void setTableId(Long tableId) {
+        this.tableId = tableId;
+        
+        // Si une table est associée, ajouter un label pour indiquer la table sélectionnée
+        if (tableId != null) {
+            // Chargement des informations de la table
+            Optional<Table> tableOpt = tableService.getTableById(tableId);
+            if (tableOpt.isPresent()) {
+                selectedTable = tableOpt.get();
+                
+                // Afficher les informations de la table
+                if (tableInfoLabel == null) {
+                    // Si le label n'existe pas, nous devons le créer et l'ajouter à la vue
+                    tableInfoLabel = new Label("Table sélectionnée: " + selectedTable.getNumero() + 
+                                              " (" + selectedTable.getCapacite() + " pers.)");
+                    tableInfoLabel.getStyleClass().add("table-info-label");
+                    tableInfoLabel.setStyle("-fx-font-weight: bold; -fx-background-color: #2c3e50; -fx-padding: 5px;");
+                    
+                    // Insérer le label après le label du client
+                    VBox parent = (VBox) customerNameField.getParent().getParent();
+                    if (parent != null) {
+                        // Chercher où insérer le label (après le GridPane des informations client)
+                        int gridPaneIndex = -1;
+                        for (int i = 0; i < parent.getChildren().size(); i++) {
+                            if (parent.getChildren().get(i) instanceof GridPane) {
+                                gridPaneIndex = i;
+                                break;
+                            }
+                        }
+                        
+                        if (gridPaneIndex >= 0) {
+                            parent.getChildren().add(gridPaneIndex + 1, tableInfoLabel);
+                        }
+                    }
+                } else {
+                    tableInfoLabel.setText("Table sélectionnée: " + selectedTable.getNumero() + 
+                                          " (" + selectedTable.getCapacite() + " pers.)");
+                }
+            }
+        }
     }
 }

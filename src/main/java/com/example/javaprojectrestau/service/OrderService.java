@@ -12,10 +12,12 @@ public class OrderService {
     
     private final OrderDAO orderDAO;
     private final DishService dishService;
+    private final TableService tableService;
     
     public OrderService() {
         this.orderDAO = new OrderDAO();
         this.dishService = new DishService();
+        this.tableService = new TableService();
         
         // S'assurer que les tables existent
         this.orderDAO.createTablesIfNotExist();
@@ -42,7 +44,14 @@ public class OrderService {
     }
     
     public Order saveOrder(Order order) {
-        return orderDAO.save(order);
+        Order savedOrder = orderDAO.save(order);
+        
+        // Si une table est associée, mettre à jour son statut
+        if (savedOrder.getTableId() != null) {
+            tableService.assignOrderToTable(savedOrder.getTableId(), savedOrder.getId());
+        }
+        
+        return savedOrder;
     }
     
     public boolean markOrderAsCompleted(Long id) {
@@ -66,5 +75,22 @@ public class OrderService {
         }
         
         return null;
+    }
+    
+    // Nouvelle méthode pour libérer une table
+    public boolean releaseTable(Long orderId) {
+        Optional<Order> orderOpt = getOrderById(orderId);
+        if (orderOpt.isPresent() && orderOpt.get().getTableId() != null) {
+            Long tableId = orderOpt.get().getTableId();
+            return tableService.releaseTable(tableId);
+        }
+        return false;
+    }
+    
+    // Nouvelle méthode pour trouver les commandes par table
+    public Optional<Order> getOrderByTableId(Long tableId) {
+        return getAllOrders().stream()
+                .filter(order -> tableId.equals(order.getTableId()))
+                .findFirst();
     }
 }
