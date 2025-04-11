@@ -335,11 +335,7 @@ public class OrderController implements Initializable {
     }
     
     private void updateOrderView() {
-        // ...existing code...
-        
         // Remplacer l'appel sans argument par un appel avec l'état actuel
         updateButtonsState(HelloApplication.timerService.getCanTakeOrders());
-        
-        // ...existing code...
     }
 }

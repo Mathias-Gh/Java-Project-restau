@@ -27,6 +27,7 @@ public class AddDishController {
     private Runnable onDishAddedCallback;
     
     @FXML
+    // méthode pour séléctionner une img
     public void handleSelectImage() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Sélectionner une image");

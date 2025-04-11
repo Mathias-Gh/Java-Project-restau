@@ -8,14 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * DAO pour accéder aux données des employés
- */
+ //DAO pour accéder aux données des employés
 public class EmployeDAO {
 
-    /**
-     * Crée les tables si elles n'existent pas
-     */
+     // Crée les tables si elles n'existent pas
     public void createTablesIfNotExist() {
         Connection conn = DatabaseConnection.getConnection();
         if (conn == null) {
@@ -110,10 +106,8 @@ public class EmployeDAO {
             return update(employe);
         }
     }
-    
-    /**
-     * Insère un nouvel employé
-     */
+
+     //Insère un nouvel employé
     private Employe insert(Employe employe) {
         String sql = "INSERT INTO employes (name, working_hour, hour_worked, post) VALUES (?, ?, ?, ?)";
         
@@ -145,10 +139,8 @@ public class EmployeDAO {
         
         return employe;
     }
-    
-    /**
-     * Met à jour un employé existant
-     */
+
+     // Met à jour un employé existant
     private Employe update(Employe employe) {
         String sql = "UPDATE employes SET name = ?, working_hour = ?, hour_worked = ?, post = ? WHERE id = ?";
         
@@ -195,10 +187,8 @@ public class EmployeDAO {
             e.printStackTrace();
         }
     }
-    
-    /**
-     * Convertit un ResultSet en objet Employe
-     */
+     // Convertit un ResultSet en objet Employe
+
     private Employe mapResultSetToEmploye(ResultSet rs) throws SQLException {
         Long id = rs.getLong("id");
         String name = rs.getString("name");

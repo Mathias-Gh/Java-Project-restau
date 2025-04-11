@@ -145,7 +145,7 @@ public class OrderDAO {
                 }
             }
             
-            // Si nous avons des commandes, récupérer leurs items
+            // Si il ya des commandes, récupérer leurs items
             if (!orderMap.isEmpty()) {
                 StringBuilder inClause = new StringBuilder("(");
                 for (Long id : orderMap.keySet()) {

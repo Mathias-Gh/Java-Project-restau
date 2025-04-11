@@ -215,8 +215,6 @@ public class DishController implements Initializable {
             e.printStackTrace();
         }
     }
-    
-    // Méthode manquante pour gérer la sélection d'image
     @FXML
     public void handleSelectImage() {
         FileChooser fileChooser = new FileChooser();
@@ -257,7 +255,7 @@ public class DishController implements Initializable {
             stage.setTitle("Ajouter un nouveau plat");
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL); // Empêcher l'interaction avec la fenêtre principale
-            stage.initStyle(StageStyle.UTILITY); // Style plus compacte pour une fenêtre de dialogue
+            stage.initStyle(StageStyle.UTILITY);
             
             // Afficher la fenêtre
             stage.showAndWait();
@@ -350,8 +348,7 @@ public class DishController implements Initializable {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
-        
-        // Appliquer le style au dialogue
+
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.getStylesheets().add(
             getClass().getResource("/com/example/javaprojectrestau/styles/dark-theme.css").toExternalForm()

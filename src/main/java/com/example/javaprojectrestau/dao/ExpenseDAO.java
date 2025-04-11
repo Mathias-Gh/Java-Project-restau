@@ -9,14 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * DAO pour accéder aux données des dépenses
- */
+ // DAO pour accéder aux données des dépenses
 public class ExpenseDAO {
 
-    /**
-     * Crée les tables si elles n'existent pas
-     */
+     // Crée les tables si elles n'existent pas
     public void createTablesIfNotExist() {
         Connection conn = DatabaseConnection.getConnection();
         if (conn == null) {
@@ -68,10 +64,9 @@ public class ExpenseDAO {
         
         return expenses;
     }
-    
-    /**
-     * Récupère les dépenses pour une période donnée
-     */
+
+     // Récupère les dépenses pour une période donnée
+
     public List<Expense> findByDateRange(LocalDateTime start, LocalDateTime end) {
         List<Expense> expenses = new ArrayList<>();
         String sql = "SELECT * FROM expenses WHERE date BETWEEN ? AND ? ORDER BY date DESC";
@@ -99,10 +94,8 @@ public class ExpenseDAO {
         
         return expenses;
     }
-    
-    /**
-     * Récupère une dépense par son id
-     */
+
+     //Récupère une dépense par son id
     public Optional<Expense> findById(Long id) {
         String sql = "SELECT * FROM expenses WHERE id = ?";
         
@@ -127,10 +120,8 @@ public class ExpenseDAO {
         
         return Optional.empty();
     }
-    
-    /**
-     * Sauvegarde une dépense (création ou mise à jour)
-     */
+
+     // Sauvegarde une dépense (création ou mise à jour)
     public Expense save(Expense expense) {
         if (expense.getId() == null) {
             return insert(expense);
@@ -138,10 +129,9 @@ public class ExpenseDAO {
             return update(expense);
         }
     }
-    
-    /**
-     * Insère une nouvelle dépense
-     */
+
+     // Insère une nouvelle dépense
+
     private Expense insert(Expense expense) {
         String sql = "INSERT INTO expenses (name, amount, date, category) VALUES (?, ?, ?, ?)";
         
@@ -174,9 +164,9 @@ public class ExpenseDAO {
         return expense;
     }
     
-    /**
-     * Met à jour une dépense existante
-     */
+
+     // Met à jour une dépense existante
+
     private Expense update(Expense expense) {
         String sql = "UPDATE expenses SET name = ?, amount = ?, date = ?, category = ? WHERE id = ?";
         
@@ -201,10 +191,9 @@ public class ExpenseDAO {
         
         return expense;
     }
-    
-    /**
-     * Supprime une dépense
-     */
+
+    // Supprime une dépense
+
     public boolean delete(Long id) {
         String sql = "DELETE FROM expenses WHERE id = ?";
         
@@ -225,10 +214,9 @@ public class ExpenseDAO {
             return false;
         }
     }
-    
-    /**
-     * Convertit un ResultSet en objet Expense
-     */
+
+     //Convertit un ResultSet en objet Expense
+
     private Expense mapResultSetToExpense(ResultSet rs) throws SQLException {
         Long id = rs.getLong("id");
         String name = rs.getString("name");

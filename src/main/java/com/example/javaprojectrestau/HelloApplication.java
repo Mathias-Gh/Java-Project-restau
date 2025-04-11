@@ -33,8 +33,7 @@ public class HelloApplication extends Application {
     
     // Singleton instance pour l'accès global
     private static HelloApplication instance;
-    
-    // Le TimerService doit être public pour être accessible aux contrôleurs
+
     public static TimerService timerService;
     
     @Override
@@ -51,16 +50,16 @@ public class HelloApplication extends Application {
         DishService dishService = new DishService();
         OrderService orderService = new OrderService();
         
-        // Initialiser le service de chronomètre ici
+        // Initialisation du service de chronomètre ici
         timerService = new TimerService();
         
-        // Créer la mise en page principale
+        // On créer la mise en page principale
         mainLayout = new BorderPane();
         
-        // Créer le composant de chronomètre
+        // On créer le composant de chronomètre
         timerComponent = new TimerComponent(timerService);
         
-        // Créer la barre latérale (sidebar)
+        // barre latérale (sidebar)
         createSidebar();
         
         // Charger la vue par défaut (dishes)
@@ -85,7 +84,7 @@ public class HelloApplication extends Application {
         sidebarLayout.getStyleClass().add("sidebar");
         sidebarLayout.setPrefWidth(250);
         
-        // Titre de l'application
+        // Titre de l'appli
         Label titleLabel = new Label("Restaurant Manager");
         titleLabel.getStyleClass().add("sidebar-header");
         
@@ -96,7 +95,7 @@ public class HelloApplication extends Application {
         Separator separator = new Separator();
         separator.setOpacity(0.3);
         
-        // Boutons de navigation
+        // Boutons de navigation présents dans la sidebar de navigation
         Button dishesButton = createSidebarButton("Gestion des plats", "dish-view.fxml");
         Button ordersButton = createSidebarButton("Gestion des commandes", "order-view.fxml");
         Button tablesButton = createSidebarButton("Gestion des tables", "table-view.fxml"); // Nouveau bouton
@@ -107,7 +106,7 @@ public class HelloApplication extends Application {
         // Activer initialement le bouton des plats
         activateSidebarButton(dishesButton);
         
-        // Observer la propriété canTakeOrders pour désactiver le bouton des commandes
+        // propriété canTakeOrders pour désactiver le bouton des commandes
         timerService.canTakeOrdersProperty().addListener((obs, oldVal, newVal) -> {
             ordersButton.setDisable(!newVal);
             if (!newVal) {

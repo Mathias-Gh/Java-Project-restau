@@ -51,8 +51,8 @@ public class AddOrderController implements Initializable {
     
     private Order currentOrder = new Order();
     private Runnable onOrderAddedCallback;
-    private Long tableId; // ID de la table associée à la commande
-    private Table selectedTable; // Table associée à la commande
+    private Long tableId;
+    private Table selectedTable;
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

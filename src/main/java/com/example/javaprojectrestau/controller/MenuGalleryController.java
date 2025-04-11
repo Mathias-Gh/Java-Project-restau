@@ -165,6 +165,7 @@ public class MenuGalleryController implements Initializable {
         return card;
     }
 
+    // charger images des plats
     private void loadDishImage(Dish dish, ImageView imageView) {
         try {
             if (dish.getId() != null) {
